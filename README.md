@@ -63,8 +63,9 @@ The audience for this project will be anyone concerned by ecology, from the novi
 
 ### Exploratory Data Analysis
 
-> 
-> 
+- **Climate Change Earth Surface Temperature Data :**
+- **Global Energy Consumption & Renewable Generation :**
+
 
 ### Related work
 
