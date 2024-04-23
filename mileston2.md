@@ -1,8 +1,6 @@
-**MILESTONE 2**
-
-  Project of Data Visualization
-  
-  Alexandre Maillard
+**<p align="center">MILESTONE 2</p>**
+**<p align="center">Project of Data Visualization</p>**
+**<p align="center">Alexandre Maillard</p>**
 
 **Objectives of the project:**
 
