@@ -8,6 +8,7 @@ The main goal of this project is to understand what an energy transition means f
 
 
 **Project Structure:**
+
 The project follows a guideline from global warming to mineral extraction. The idea is to start from the bottom and go deeper and deeper.
 Everything will take place on the same globe throughout the exploration, with different layers being added or removed as you go along.  
 
