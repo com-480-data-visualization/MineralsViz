@@ -1,6 +1,8 @@
-**<p align="center">MILESTONE 2</p>**
-**<p align="center">Project of Data Visualization</p>**
+**<h1 align="center">MILESTONE 2</h1>**
+**<h2 align="center">Project of Data Visualization</h2>**
 **<p align="center">Alexandre Maillard</p>**
+
+website url : https://com-480-data-visualization.github.io/MineralsViz/
 
 **Objectives of the project:**
 
