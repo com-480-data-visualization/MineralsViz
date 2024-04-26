@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/static/css/main.25df2235.css",
+    "main.js": "/static/js/main.aa2dbcca.js",
+    "static/media/ciel_etoile.avif": "/static/media/ciel_etoile.63ea6824479139a16a1d.avif",
+    "index.html": "/index.html",
+    "main.25df2235.css.map": "/static/css/main.25df2235.css.map",
+    "main.aa2dbcca.js.map": "/static/js/main.aa2dbcca.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.25df2235.css",
+    "static/js/main.aa2dbcca.js"
+  ]
+}
