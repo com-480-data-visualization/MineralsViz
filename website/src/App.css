@@ -1,0 +1,10 @@
+.App {
+  text-align: center;
+}
+
+.country {
+  fill: #ddd;
+  stroke: #777;
+  stroke-width: 0.5;
+}
+
