@@ -68,8 +68,8 @@ function Globe() {
       <svg ref={globeRef} width={600} height={600}></svg>
       {selectedCountry && (
         <div className="popup">
-          <img src="img/G1.png" alt={selectedCountry.properties.name} style={{ width: '350px' }}/>
           <img src="img/G2.png" alt={selectedCountry.properties.name} style={{ width: '350px' }}/>
+          <img src="img/G1.png" alt={selectedCountry.properties.name} style={{ width: '350px' }}/>
           <p>{selectedCountry.properties.name}</p>
         </div>
     

@@ -1,7 +1,8 @@
 {
-  "name": "globe-app",
+  "name": "website",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://com-480-data-visualization.github.io/MineralsViz/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -23,7 +24,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-  
+
   "eslintConfig": {
     "extends": [
       "react-app",
