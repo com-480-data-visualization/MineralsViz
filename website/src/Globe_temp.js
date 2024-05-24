@@ -102,14 +102,14 @@ function Glb() {
       });
     });
 
-  }, [selectedYear]); // Ajoute isDragging en tant que dépendance pour que useEffect soit déclenché lorsqu'il change
+  }, [selectedYear, temperatureData]); // Ajoute isDragging en tant que dépendance pour que useEffect soit déclenché lorsqu'il change
 
   // Update country colors based on temperature data
   useEffect(() => {
     if (temperatureData) {
       console.log("Temperature data:", temperatureData);
 
-      const yearData = temperatureData.find(d => d.year === selectedYear);
+      const yearData = temperatureData.find(data => data.year === selectedYear);
       console.log("Year data:", yearData);
 
       if (yearData && Array.isArray(yearData.values)) {
