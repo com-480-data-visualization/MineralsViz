@@ -35,7 +35,7 @@ function Glb() {
       const countries = topojson.feature(data, data.objects.countries);
 
       // Load temperature data
-      d3.csv("/data/temperature_data.csv")
+      d3.csv("data/temperature_data.csv")
         .then(temperatureData => {
           console.log("Loaded temperature data:", temperatureData);
           setTemperatureData(temperatureData);
