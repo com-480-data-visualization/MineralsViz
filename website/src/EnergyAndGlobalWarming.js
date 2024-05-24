@@ -1,5 +1,5 @@
 import React from 'react';
-import Globe from './Globe';
+import Glb from './Globe_temp';
 import './styles.css';
 import { Link } from 'react-router-dom';
 
@@ -9,7 +9,7 @@ function EnergyAndGlobalWarming() {
       <h2>Energy and Global Warming</h2>
       <p>Lorem ipsum...</p>
       <div className="content">
-        <Globe />
+        <Glb />
       </div>
       <div className="navigation-buttons">
         <Link to="/scenario" className="arrow-left">&#8592;</Link>

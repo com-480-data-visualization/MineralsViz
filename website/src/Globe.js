@@ -6,7 +6,9 @@ import './styles.css';
 function Globe() {
   const globeRef = useRef(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
-  const isDragging = useRef(false);
+  const [isDragging, setIsDragging] = useState(false); // Pour suivre l'état de la souris
+  const [startPosition, setStartPosition] = useState({ x: 0, y: 0 }); // Position de départ lors du déplacement
+  const [rotationSpeed, setRotationSpeed] = useState(0.5); // Vitesse de rotation du globe
 
   useEffect(() => {
     const svg = d3.select(globeRef.current);
@@ -33,7 +35,8 @@ function Globe() {
         .attr("d", path)
         .attr("fill", "white")  // Couleur initiale du pays
         .on("mousedown", function(event, d) {
-          isDragging.current = true;
+          setIsDragging(true);
+          setStartPosition({ x: event.clientX, y: event.clientY });
           setSelectedCountry(d);
           svg.selectAll(".country").attr("fill", country => (country === d ? "#ffcc00" : "white"));
           globeRef.current.classList.add('shifted');
@@ -41,30 +44,31 @@ function Globe() {
         .attr("id", d => `country-${d.id}`); // Ajouter un ID unique à chaque pays
 
       svg.on("mousemove", function(event) {
-        if (isDragging.current) {
-          const dx = event.movementX;
-          const dy = event.movementY;
+        if (isDragging) {
+          const dx = event.clientX - startPosition.x;
+          const dy = event.clientY - startPosition.y;
           const rotate = projection.rotate();
-          const scaleFactor = 0.25;
 
-          rotate[0] += dx * scaleFactor;
-          rotate[1] -= dy * scaleFactor;
+          rotate[0] += dx * rotationSpeed;
+          rotate[1] -= dy * rotationSpeed;
 
           projection.rotate(rotate);
           svg.selectAll("path").attr("d", path);
+          setStartPosition({ x: event.clientX, y: event.clientY });
         }
       });
 
       svg.on("mouseup", () => {
-        isDragging.current = false;
+        setIsDragging(false);
+        globeRef.current.classList.remove('shifted');
       });
 
     });
 
-  }, []);
+  }, [isDragging, rotationSpeed, startPosition]); // Ajoute isDragging en tant que dépendance pour que useEffect soit déclenché lorsqu'il change
 
   return (
-    <div className="Globe">
+    <div className="GlobeContainer">
       <svg ref={globeRef} width={600} height={600}></svg>
       {selectedCountry && (
         <div className="popup">
@@ -72,8 +76,15 @@ function Globe() {
           <img src="img/G1.png" alt={selectedCountry.properties.name} style={{ width: '350px' }}/>
           <p>{selectedCountry.properties.name}</p>
         </div>
-    
       )}
+      <input 
+        type="range" 
+        min="0.1" 
+        max="1" 
+        step="0.01" 
+        value={rotationSpeed} 
+        onChange={(e) => setRotationSpeed(parseFloat(e.target.value))} 
+      />
     </div>
   );
 }

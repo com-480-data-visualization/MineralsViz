@@ -102,8 +102,27 @@ p {
     padding: 5px;
   }
   
-  .popup img {
+.popup img {
     height: auto;
     display: block;
     margin-bottom: 20px;
+  }
+
+  .GlobeContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+  }
+  
+  .slider {
+    width: 80%; /* Ajuste la largeur du slider selon tes besoins */
+    margin-top: 20px; /* Espacement par rapport au globe */
+  }
+  
+  .selected-year {
+    color: white;
+    margin-top: 10px; /* Espacement par rapport au slider */
   }
