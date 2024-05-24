@@ -11,53 +11,71 @@ function Glb() {
   const isDragging = useRef(false);
 
   useEffect(() => {
-    // Load temperature data on component mount
-    d3.csv("data/temperature_data.csv")
-      .then(temperatureData => {
-        console.log("Loaded temperature data:", temperatureData);
-        setTemperatureData(temperatureData);
-      })
-      .catch(error => {
-        console.error("Error loading temperature data:", error);
-      });
+    const svg = d3.select(globeRef.current);
 
-    // Load world map data
+    const width = 800;
+    const height = 800;
+
+    // Projection du globe
+    const projection = d3.geoOrthographic()
+      .scale(300)
+      .translate([width / 2, height / 2]);
+
+    const path = d3.geoPath().projection(projection);
+
+    // Add ocean background as a circle
+    svg.append("circle")
+      .attr("cx", width / 2)
+      .attr("cy", height / 2)
+      .attr("r", projection.scale())
+      .attr("fill", "#a0c4ff"); // Ocean color
+
+    // Chargement des données du monde
     d3.json("https://unpkg.com/world-atlas@2.0.2/countries-110m.json").then(data => {
-      const svg = d3.select(globeRef.current);
       const countries = topojson.feature(data, data.objects.countries);
 
-      // Projection du globe
-      const projection = d3.geoOrthographic()
-        .scale(300)
-        .translate([800 / 2, 800 / 2]);
+      // Load temperature data
+      d3.csv("data/temperature_data.csv")
+        .then(temperatureData => {
+          console.log("Loaded temperature data:", temperatureData);
+          setTemperatureData(temperatureData);
 
-      const path = d3.geoPath().projection(projection);
+          // Extract years from column headers
+          const years = temperatureData.columns.slice(1);
+          console.log("Years extracted:", years);
+        })
+        .catch(error => {
+          console.error("Error loading temperature data:", error);
+        });
 
-      // Add ocean background as a circle
-      svg.append("circle")
-        .attr("cx", 800 / 2)
-        .attr("cy", 800 / 2)
-        .attr("r", projection.scale())
-        .attr("fill", "#a0c4ff"); // Ocean color
-
-      // Draw countries
+      // Dessiner les pays
       svg.selectAll("path")
         .data(countries.features)
         .enter().append("path")
         .attr("class", "country")
         .attr("d", path)
-        .attr("fill", "white")  // Initial country color
-        .attr("id", d => `country-${d.id}`) // Unique ID for each country
+        .attr("fill", "white")  // Couleur initiale du pays
+        .attr("id", d => `country-${d.id}`) // Ajouter un ID unique à chaque pays
         .on("mousedown", function(event, d) {
           isDragging.current = true;
           setSelectedCountry(d);
           svg.selectAll(".country").attr("fill", country => (country === d ? "#ffcc00" : "white"));
           globeRef.current.classList.add('shifted');
-          const countryData = temperatureData.find(data => data.year === selectedYear)?.values.find(val => val.country === d.properties.name);
-          if (countryData) {
-            console.log(`Average Temperature for ${d.properties.name}: ${countryData.temperature}`);
+          if (temperatureData) {
+            const countryData = temperatureData.find(data => data.year === selectedYear);
+            if (countryData && countryData.values) {
+                const countryValues = countryData.values.find(val => val.country === d.properties.name);
+                if (countryValues) {
+                    const averageTemperature = d3.mean(countryValues.map(val => val.temperature));
+                    console.log(`Average Temperature for ${d.properties.name}: ${averageTemperature}`);
+                } else {
+                    console.log(`No temperature data available for ${d.properties.name}`);
+                }
+            } else {
+                console.log(`No temperature data available for the selected year ${selectedYear}`);
+            }
           } else {
-            console.log(`No temperature data available for ${d.properties.name}`);
+              console.log("Temperature data is not available");
           }
         });
 
@@ -83,29 +101,38 @@ function Glb() {
         isDragging.current = false;
       });
     });
-  }, []); // Load data on component mount
 
+  }, [selectedYear]); // Ajoute isDragging en tant que dépendance pour que useEffect soit déclenché lorsqu'il change
+
+  // Update country colors based on temperature data
   useEffect(() => {
     if (temperatureData) {
       console.log("Temperature data:", temperatureData);
-      // Process temperature data and update country colors
+
       const yearData = temperatureData.find(d => d.year === selectedYear);
+      console.log("Year data:", yearData);
+
       if (yearData && Array.isArray(yearData.values)) {
         const temperatures = yearData.values.map(val => val.temperature).filter(val => val !== null);
+        console.log("Temperatures:", temperatures);
+
         if (temperatures.length > 0) {
           const temperatureScale = d3.scaleSequential(d3.interpolateRdBu)
             .domain(d3.extent(temperatures));
+          console.log("Temperature scale domain:", temperatureScale.domain());
+          console.log("Temperature scale range:", temperatureScale.range());
 
           d3.selectAll(".country")
             .attr("fill", d => {
               const countryData = yearData.values.find(val => val.country === d.properties.name);
+              console.log("Country data:", countryData);
               return countryData ? temperatureScale(countryData.temperature) : "white";
             });
+        } else {
+          // No temperature data available for the selected year
+          d3.selectAll(".country")
+            .attr("fill", "white");
         }
-      } else {
-        // No temperature data available for the selected year
-        d3.selectAll(".country")
-          .attr("fill", "white");
       }
     }
   }, [temperatureData, selectedYear]);
