@@ -63,6 +63,7 @@ function Glb() {
           globeRef.current.classList.add('shifted');
           if (temperatureData) {
             const countryData = temperatureData.find(data => data.year === selectedYear);
+            console.log("Country data:", countryData);
             if (countryData && countryData.values) {
                 const countryValues = countryData.values.find(val => val.country === d.properties.name);
                 if (countryValues) {
@@ -102,14 +103,14 @@ function Glb() {
       });
     });
 
-  }, [selectedYear, temperatureData]); // Ajoute isDragging en tant que dépendance pour que useEffect soit déclenché lorsqu'il change
+  }, [selectedYear]); // Ajoute isDragging en tant que dépendance pour que useEffect soit déclenché lorsqu'il change
 
   // Update country colors based on temperature data
   useEffect(() => {
     if (temperatureData) {
       console.log("Temperature data:", temperatureData);
 
-      const yearData = temperatureData.find(data => data.year === selectedYear);
+      const yearData = temperatureData.find(data => data[selectedYear.toString()]);
       console.log("Year data:", yearData);
 
       if (yearData && Array.isArray(yearData.values)) {
