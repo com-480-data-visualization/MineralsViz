@@ -11,7 +11,7 @@ function Glb() {
   const [temperatureData, setTemperatureData] = useState(null);
   const [productionData, setProductionData] = useState(null);
   const [consumptionData, setConsumptionData] = useState(null);
-  const [selectedYear, setSelectedYear] = useState(1950); // Default year
+  const [selectedYear, setSelectedYear] = useState(1971); // Default year
   const isDragging = useRef(false);
 
   useEffect(() => {
@@ -77,7 +77,8 @@ function Glb() {
         .on("mousedown", function (event, d) {
           isDragging.current = true;
           setSelectedCountry(d);
-          svg.selectAll(".country").attr("fill", country => (country === d ? "#ffcc00" : "white"));
+          svg.selectAll(".country").attr("stroke", null); // Remove previous border
+          d3.select(this).attr("stroke", "black"); // Highlight selected country
           globeRef.current.classList.add('shifted');
           if (temperatureData) {
             const yearData = temperatureData.find(data => data[selectedYear.toString()]);
@@ -180,11 +181,11 @@ function Glb() {
 
     prodSvg.append("text")
       .attr("x", prodWidth / 2)
-      .attr("y", -10)
+      .attr("y", -20)
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
       .style("text-decoration", "underline")
-      .text("Energy Production");
+      .text(`Energy Production in ${country}`);
 
     // Consumption chart
     const consoMargin = { top: 40, right: 30, bottom: 70, left: 50 };
@@ -232,11 +233,11 @@ function Glb() {
 
     consoSvg.append("text")
       .attr("x", consoWidth / 2)
-      .attr("y", -10)
+      .attr("y", -20)
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
       .style("text-decoration", "underline")
-      .text("Energy Consumption");
+      .text(`Energy Consumption in ${country}`);
   };
 
   // Update country colors based on temperature data
@@ -257,7 +258,7 @@ function Glb() {
 
         if (temperatures.length > 0) {
           const temperatureScale = d3.scaleSequential(d3.interpolateRdBu)
-            .domain(d3.extent(temperatures));
+            .domain(d3.extent(temperatures).reverse());
           console.log("Temperature scale domain:", temperatureScale.domain());
           console.log("Temperature scale range:", temperatureScale.range());
 
@@ -288,7 +289,7 @@ function Glb() {
           type="range" 
           id="year" 
           name="year" 
-          min="1950" 
+          min="1971" 
           max="2013" 
           value={selectedYear} 
           onChange={e => setSelectedYear(+e.target.value)} // Convert value to number
@@ -296,7 +297,7 @@ function Glb() {
         <span>{selectedYear}</span>
       </div>
       <div ref={productionChartRef} style={{ position: 'absolute', top: '10px', right: '10px' }}></div>
-      <div ref={consumptionChartRef} style={{ position: 'absolute', top: '340px', right: '10px' }}></div>
+      <div ref={consumptionChartRef} style={{ position: 'absolute', top: '360px', right: '10px' }}></div>
     </div>
   );
 }
