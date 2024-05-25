@@ -84,6 +84,7 @@ function Glb() {
             const yearData = temperatureData.find(data => data[selectedYear.toString()]);
             if (yearData && yearData[d.properties.name]) {
               console.log(`Average Temperature for ${d.properties.name}: ${yearData[d.properties.name]}`);
+              addTemperatureLabel(d.properties.name, yearData[d.properties.name], path.centroid(d));
             } else {
               console.log(`No temperature data available for ${d.properties.name}`);
             }
@@ -122,6 +123,20 @@ function Glb() {
 
   }, [selectedYear]); // Re-run the effect when the selected year changes
 
+  const addTemperatureLabel = (countryName, temperature, position) => {
+    const svg = d3.select(globeRef.current);
+    svg.selectAll(`.temp-label-${countryName}`).remove(); // Remove existing labels
+
+    svg.append("text")
+      .attr("class", `temp-label temp-label-${countryName}`)
+      .attr("x", position[0])
+      .attr("y", position[1])
+      .attr("text-anchor", "middle")
+      .attr("fill", "white")
+      .attr("font-size", "12px")
+      .text(`${temperature.toFixed(2)}°C`);
+  };
+
   const plotBarCharts = (country) => {
     if (!productionData || !consumptionData) return;
 
@@ -136,7 +151,7 @@ function Glb() {
     consumptionChart.selectAll("*").remove();
 
     // Production chart
-    const prodMargin = { top: 40, right: 30, bottom: 70, left: 50 };
+    const prodMargin = { top: 60, right: 30, bottom: 70, left: 50 };
     const prodWidth = 500 - prodMargin.left - prodMargin.right;
     const prodHeight = 300 - prodMargin.top - prodMargin.bottom;
 
@@ -185,10 +200,11 @@ function Glb() {
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
       .style("text-decoration", "underline")
+      .attr("fill", "white")
       .text(`Energy Production in ${country}`);
 
     // Consumption chart
-    const consoMargin = { top: 40, right: 30, bottom: 70, left: 50 };
+    const consoMargin = { top: 60, right: 30, bottom: 70, left: 50 };
     const consoWidth = 500 - consoMargin.left - consoMargin.right;
     const consoHeight = 300 - consoMargin.top - consoMargin.bottom;
 
@@ -237,6 +253,7 @@ function Glb() {
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
       .style("text-decoration", "underline")
+      .attr("fill", "white")
       .text(`Energy Consumption in ${country}`);
   };
 
@@ -257,7 +274,7 @@ function Glb() {
         console.log("Temperatures:", temperatures);
 
         if (temperatures.length > 0) {
-          const temperatureScale = d3.scaleSequential(d3.interpolateRdBu)
+          const temperatureScale = d3.scaleSequential(d3.interpolateRdYlBu)
             .domain(d3.extent(temperatures).reverse());
           console.log("Temperature scale domain:", temperatureScale.domain());
           console.log("Temperature scale range:", temperatureScale.range());
