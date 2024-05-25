@@ -14,37 +14,9 @@ function Glb() {
   const isDragging = useRef(false);
 
   useEffect(() => {
-    const svg = d3.select(globeRef.current);
-
-    const width = 800;
-    const height = 800;
-
-    // Projection du globe
-    const projection = d3.geoOrthographic()
-      .scale(300)
-      .translate([width / 2, height / 2]);
-
-    const path = d3.geoPath().projection(projection);
-
-    // Add ocean background as a circle
-    svg.append("circle")
-      .attr("cx", width / 2)
-      .attr("cy", height / 2)
-      .attr("r", projection.scale())
-      .attr("fill", "#add8e6"); // Ocean color
-
-    // Load renewable production data
-    d3.csv("data/renewable_prod.csv").then(data => {
-      setRenewableProdData(data);
-    });
-
-    // Load evolution production data
-    d3.csv("data/evolv_prod_renewable.csv").then(data => {
-      setEvolvProdData(data);
-    });
-
     // Function to draw the globe and countries
-    const drawGlobe = countries => {
+    const drawGlobe = (countries, projection, path) => {
+      const svg = d3.select(globeRef.current);
       svg.selectAll(".country").remove(); // Clear existing paths
       svg.selectAll("path")
         .data(countries.features)
@@ -85,13 +57,36 @@ function Glb() {
       });
     };
 
-    // Load world data and draw globe
-    d3.json("https://unpkg.com/world-atlas@2.0.2/countries-110m.json").then(data => {
-      const countries = topojson.feature(data, data.objects.countries);
-      drawGlobe(countries);
-    });
+    // Function to initialize the globe
+    const initializeGlobe = () => {
+      const svg = d3.select(globeRef.current);
 
-  }, [selectedEnergy, renewableProdData]); // Re-run the effect when the selected energy changes
+      const width = 800;
+      const height = 800;
+
+      // Projection of the globe
+      const projection = d3.geoOrthographic()
+        .scale(300)
+        .translate([width / 2, height / 2]);
+
+      const path = d3.geoPath().projection(projection);
+
+      // Add ocean background as a circle
+      svg.append("circle")
+        .attr("cx", width / 2)
+        .attr("cy", height / 2)
+        .attr("r", projection.scale())
+        .attr("fill", "#add8e6"); // Ocean color
+
+      // Load world data and draw globe
+      d3.json("https://unpkg.com/world-atlas@2.0.2/countries-110m.json").then(data => {
+        const countries = topojson.feature(data, data.objects.countries);
+        drawGlobe(countries, projection, path);
+      });
+    };
+
+    initializeGlobe();
+  }, []); // Empty dependency array to run only once on mount
 
   const getColor = (country) => {
     if (!renewableProdData) return 'white';
@@ -204,8 +199,22 @@ function Glb() {
   };
 
   useEffect(() => {
+    // Load renewable production data
+    d3.csv("data/renewable_prod.csv").then(data => {
+      setRenewableProdData(data);
+    });
+
+    // Load evolution production data
+    d3.csv("data/evolv_prod_renewable.csv").then(data => {
+      setEvolvProdData(data);
+    });
+  }, []);
+
+  useEffect(() => {
     if (renewableProdData) {
       createLegend();
+      const svg = d3.select(globeRef.current);
+      svg.selectAll(".country").attr("fill", d => getColor(d.properties.name));
     }
   }, [selectedEnergy, renewableProdData]);
 
