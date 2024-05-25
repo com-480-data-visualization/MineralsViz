@@ -135,9 +135,9 @@ function Glb() {
     consumptionChart.selectAll("*").remove();
 
     // Production chart
-    const prodMargin = { top: 20, right: 30, bottom: 40, left: 40 };
-    const prodWidth = 400 - prodMargin.left - prodMargin.right;
-    const prodHeight = 200 - prodMargin.top - prodMargin.bottom;
+    const prodMargin = { top: 40, right: 30, bottom: 70, left: 50 };
+    const prodWidth = 500 - prodMargin.left - prodMargin.right;
+    const prodHeight = 300 - prodMargin.top - prodMargin.bottom;
 
     const prodSvg = productionChart.append("svg")
       .attr("width", prodWidth + prodMargin.left + prodMargin.right)
@@ -157,7 +157,12 @@ function Glb() {
     prodSvg.append("g")
       .attr("class", "x-axis")
       .attr("transform", `translate(0,${prodHeight})`)
-      .call(d3.axisBottom(prodX));
+      .call(d3.axisBottom(prodX))
+      .selectAll("text")
+      .attr("transform", "rotate(-90)")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .style("text-anchor", "end");
 
     prodSvg.append("g")
       .attr("class", "y-axis")
@@ -173,10 +178,18 @@ function Glb() {
       .attr("height", d => prodHeight - prodY(+d[selectedYear]))
       .attr("fill", "#69b3a2");
 
+    prodSvg.append("text")
+      .attr("x", prodWidth / 2)
+      .attr("y", -10)
+      .attr("text-anchor", "middle")
+      .style("font-size", "16px")
+      .style("text-decoration", "underline")
+      .text("Energy Production");
+
     // Consumption chart
-    const consoMargin = { top: 20, right: 30, bottom: 40, left: 40 };
-    const consoWidth = 400 - consoMargin.left - consoMargin.right;
-    const consoHeight = 200 - consoMargin.top - consoMargin.bottom;
+    const consoMargin = { top: 40, right: 30, bottom: 70, left: 50 };
+    const consoWidth = 500 - consoMargin.left - consoMargin.right;
+    const consoHeight = 300 - consoMargin.top - consoMargin.bottom;
 
     const consoSvg = consumptionChart.append("svg")
       .attr("width", consoWidth + consoMargin.left + consoMargin.right)
@@ -196,7 +209,12 @@ function Glb() {
     consoSvg.append("g")
       .attr("class", "x-axis")
       .attr("transform", `translate(0,${consoHeight})`)
-      .call(d3.axisBottom(consoX));
+      .call(d3.axisBottom(consoX))
+      .selectAll("text")
+      .attr("transform", "rotate(-90)")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .style("text-anchor", "end");
 
     consoSvg.append("g")
       .attr("class", "y-axis")
@@ -210,8 +228,56 @@ function Glb() {
       .attr("y", d => consoY(+d[selectedYear]))
       .attr("width", consoX.bandwidth())
       .attr("height", d => consoHeight - consoY(+d[selectedYear]))
-      .attr("fill", "#ff6f69");
+      .attr("fill", "#ff8c00");
+
+    consoSvg.append("text")
+      .attr("x", consoWidth / 2)
+      .attr("y", -10)
+      .attr("text-anchor", "middle")
+      .style("font-size", "16px")
+      .style("text-decoration", "underline")
+      .text("Energy Consumption");
   };
+
+  // Update country colors based on temperature data
+  useEffect(() => {
+    if (temperatureData) {
+      console.log("Temperature data:", temperatureData);
+
+      temperatureData.forEach(d => {
+        d[selectedYear] = +d[selectedYear];
+      });
+
+      const yearData = temperatureData.find(data => data[selectedYear.toString()]);
+      console.log("Year data:", yearData);
+
+      if (yearData) {
+        const temperatures = temperatureData.map(d => d[selectedYear]).filter(val => val !== null);
+        console.log("Temperatures:", temperatures);
+
+        if (temperatures.length > 0) {
+          const temperatureScale = d3.scaleSequential(d3.interpolateRdBu)
+            .domain(d3.extent(temperatures));
+          console.log("Temperature scale domain:", temperatureScale.domain());
+          console.log("Temperature scale range:", temperatureScale.range());
+
+          d3.selectAll(".country")
+            .attr("fill", d => {
+              const countryData = temperatureData.find(val => val.country === d.properties.name);
+              return countryData ? temperatureScale(countryData[selectedYear]) : "white";
+            });
+        } else {
+          // No temperature data available for the selected year
+          d3.selectAll(".country")
+            .attr("fill", "white");
+        }
+      }
+
+      if (selectedCountry) {
+        plotBarCharts(selectedCountry.properties.name);
+      }
+    }
+  }, [temperatureData, selectedYear]);
 
   return (
     <div className="GlobeContainer">
@@ -229,8 +295,8 @@ function Glb() {
         />
         <span>{selectedYear}</span>
       </div>
-      <div ref={productionChartRef} style={{ position: 'absolute', top: '10px', right: '420px' }}></div>
-      <div ref={consumptionChartRef} style={{ position: 'absolute', top: '220px', right: '420px' }}></div>
+      <div ref={productionChartRef} style={{ position: 'absolute', top: '10px', right: '10px' }}></div>
+      <div ref={consumptionChartRef} style={{ position: 'absolute', top: '340px', right: '10px' }}></div>
     </div>
   );
 }
