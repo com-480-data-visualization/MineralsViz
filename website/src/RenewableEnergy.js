@@ -1,5 +1,5 @@
 import React from 'react';
-import Globe from './Globe';
+import Glb from './Globe_nrj';
 import './styles.css';
 import { Link } from 'react-router-dom';
 
@@ -9,7 +9,7 @@ function RenewableEnergy() {
       <h2>Renewable Energy</h2>
       <p>Lorem ipsum...</p>
       <div className="content">
-        <Globe />
+        <Glb />
       </div>
       <div className="navigation-buttons">
         <Link to="/energy-and-global-warming" className="arrow-left">&#8592;</Link>

@@ -7,6 +7,7 @@ function Glb() {
   const globeRef = useRef(null);
   const productionChartRef = useRef(null);
   const consumptionChartRef = useRef(null);
+  const legendRef = useRef(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [temperatureData, setTemperatureData] = useState(null);
   const [productionData, setProductionData] = useState(null);
@@ -32,7 +33,7 @@ function Glb() {
       .attr("cx", width / 2)
       .attr("cy", height / 2)
       .attr("r", projection.scale())
-      .attr("fill", "#a0c4ff"); // Ocean color
+      .attr("fill", "#add8e6"); // Ocean color
 
     // Load temperature data
     d3.csv("data/temperature_data.csv")
@@ -284,6 +285,52 @@ function Glb() {
               const countryData = temperatureData.find(val => val.country === d.properties.name);
               return countryData ? temperatureScale(countryData[selectedYear]) : "white";
             });
+
+          // Add legend
+          const legendSvg = d3.select(legendRef.current);
+          legendSvg.selectAll("*").remove(); // Clear existing legend
+          const legendWidth = 300;
+          const legendHeight = 10;
+
+          const gradient = legendSvg.append("defs")
+            .append("linearGradient")
+            .attr("id", "temperature-gradient")
+            .attr("x1", "0%")
+            .attr("x2", "100%")
+            .attr("y1", "0%")
+            .attr("y2", "0%");
+
+          gradient.append("stop")
+            .attr("offset", "0%")
+            .attr("stop-color", d3.interpolateRdYlBu(0));
+
+          gradient.append("stop")
+            .attr("offset", "50%")
+            .attr("stop-color", d3.interpolateRdYlBu(0.5));
+
+          gradient.append("stop")
+            .attr("offset", "100%")
+            .attr("stop-color", d3.interpolateRdYlBu(1));
+
+          legendSvg.append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", legendWidth)
+            .attr("height", legendHeight)
+            .style("fill", "url(#temperature-gradient)");
+
+          const legendScale = d3.scaleLinear()
+            .domain(d3.extent(temperatures).reverse())
+            .range([0, legendWidth]);
+
+          const legendAxis = d3.axisBottom(legendScale)
+            .ticks(5)
+            .tickFormat(d => `${d.toFixed(1)}°C`);
+
+          legendSvg.append("g")
+            .attr("class", "axis")
+            .attr("transform", `translate(0,${legendHeight})`)
+            .call(legendAxis);
         } else {
           // No temperature data available for the selected year
           d3.selectAll(".country")
@@ -299,6 +346,7 @@ function Glb() {
 
   return (
     <div className="GlobeContainer">
+      <svg ref={legendRef} width={300} height={30} style={{ marginBottom: '10px' }}></svg>
       <svg ref={globeRef} width={800} height={800}></svg>
       <div className="yearSlider" style={{ marginTop: '20px' }}>
         <label htmlFor="year">Select Year:</label>
