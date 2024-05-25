@@ -222,14 +222,18 @@ function Glb() {
     <div className="GlobeContainer">
       <div className="energy-buttons">
         {['Wind', 'Hydro', 'Solar', 'Other'].map(energy => (
-          <button key={energy} onClick={() => setSelectedEnergy(energy)}>
+          <button
+            key={energy}
+            onClick={() => setSelectedEnergy(energy)}
+            style={{ backgroundColor: selectedEnergy === energy ? 'lightgreen' : 'white' }}
+          >
             {energy}
           </button>
         ))}
       </div>
       <svg ref={legendRef} width={300} height={30} style={{ marginBottom: '10px' }}></svg>
       <svg ref={globeRef} width={800} height={800}></svg>
-      <div ref={graphRef} style={{ position: 'absolute', top: '850px', left: '10px' }}></div>
+      <div ref={graphRef} style={{ position: 'absolute', top: '10px', right: '10px', width: '500px', height: '300px' }}></div>
     </div>
   );
 }
