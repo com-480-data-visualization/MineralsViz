@@ -141,7 +141,7 @@ function Glb() {
     const height = 300 - margin.top - margin.bottom;
 
     const years = Object.keys(countryData[0]).slice(2).map(year => +year);
-    const values = years.map(year => +countryData[0][year]);
+    const values = years.map(year => +countryData[0][year]).filter(value => !isNaN(value));
 
     console.log(`Years: ${years}`);
     console.log(`Values: ${values}`);
