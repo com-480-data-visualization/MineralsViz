@@ -201,11 +201,11 @@ function Glb() {
 
     const lineExtraction = d3.line()
       .x((d, i) => x(years[i]))
-      .y(d => y(extractionValues[i]));
+      .y((d, i) => y(extractionValues[i]));
 
     const lineReserve = d3.line()
       .x((d, i) => x(years[i]))
-      .y(d => y(reserveValues[i]));
+      .y((d, i) => y(reserveValues[i]));
 
     const g = graphSvg.append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -258,7 +258,9 @@ function Glb() {
       </div>
       <svg ref={legendRef} width={300} height={30} style={{ marginBottom: '10px' }}></svg>
       <svg ref={globeRef} width={800} height={800}></svg>
-      <svg ref={graphRef} width={500} height={300} style={{ position: 'absolute', top: '10px', right: '10px', color: 'white' }}></svg>
+      <div className="graph-container" style={{ position: 'absolute', top: '50px', right: '10px', width: '500px', height: '300px' }}>
+        <svg ref={graphRef} width="100%" height="100%"></svg>
+      </div>
     </div>
   );
 }
