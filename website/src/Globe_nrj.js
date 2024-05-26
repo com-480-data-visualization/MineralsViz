@@ -117,7 +117,6 @@ function Glb() {
     const colorScale = d3.scaleLinear()
       .domain([0, maxValue])
       .range(["#e5ffe5", "#006400"]);
-    console.log(`Country: ${country}, Value: ${value}, Color: ${colorScale(value)}`);
     return colorScale(value);
   };
 
@@ -158,6 +157,9 @@ function Glb() {
     const line = d3.line()
       .x((d, i) => x(years[i]))
       .y(d => y(d));
+
+    const linePath = line(values);
+    console.log(`Line path: ${linePath}`);
 
     const g = graphSvg.append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -247,7 +249,7 @@ function Glb() {
       </div>
       <svg ref={legendRef} width={300} height={30} style={{ marginBottom: '10px' }}></svg>
       <svg ref={globeRef} width={800} height={800}></svg>
-      <div ref={graphRef} style={{ position: 'absolute', top: '20px', right: '10px', width: '500px', height: '300px' }}></div>
+      <div ref={graphRef} style={{ position: 'absolute', top: '10px', right: '10px', width: '500px', height: '300px', color: 'white' }}></div>
     </div>
   );
 }
