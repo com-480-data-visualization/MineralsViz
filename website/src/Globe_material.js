@@ -13,7 +13,6 @@ function Glb() {
 
   useEffect(() => {
     const svg = d3.select(globeRef.current);
-
     const width = 800;
     const height = 800;
 
@@ -39,7 +38,7 @@ function Glb() {
         .enter().append("path")
         .attr("class", "country")
         .attr("d", path)
-        .attr("fill", d => getColor(d.properties.name))  // Color countries based on mineral data
+        .attr("fill", d => getColor(d.properties.name))  // Color based on selected mineral
         .attr("id", d => `country-${d.id}`) // Add a unique ID to each country
         .on("mousedown", function (event, d) {
           isDragging.current = true;
@@ -80,10 +79,11 @@ function Glb() {
 
     // Load mineral data
     d3.csv("data/tot_mineral.csv").then(data => {
+      console.log("Loaded mineral data:", data);
       setMineralData(data);
     });
 
-  }, []); // Run once
+  }, []);
 
   useEffect(() => {
     if (mineralData) {
@@ -91,7 +91,7 @@ function Glb() {
       svg.selectAll(".country").attr("fill", d => getColor(d.properties.name));
       createLegend();
     }
-  }, [selectedMineral, mineralData]); // Re-run when selected mineral or data changes
+  }, [selectedMineral, mineralData]);
 
   const getColor = (country) => {
     if (!mineralData) return 'white';
@@ -99,9 +99,9 @@ function Glb() {
     if (!countryData) return 'white';
     const value = +countryData.quantity;
     const maxValue = d3.max(mineralData.filter(d => d.type === selectedMineral), d => +d.quantity);
-    const colorScale = d3.scaleLinear()
-      .domain([0, maxValue])
-      .range(["#ffffff", "#555555"]); // White to dark grey
+    const colorScale = d3.scaleLog()
+      .domain([1, maxValue]) // Using 1 to avoid log(0)
+      .range(["#ffffff", "#4d4d4d"]); // White to dark grey
     return colorScale(value);
   };
 
@@ -126,7 +126,7 @@ function Glb() {
 
     gradient.append("stop")
       .attr("offset", "100%")
-      .attr("stop-color", "#555555");
+      .attr("stop-color", "#4d4d4d");
 
     legendSvg.append("rect")
       .attr("x", 0)
@@ -136,12 +136,12 @@ function Glb() {
       .style("fill", "url(#legend-gradient)");
 
     const maxValue = d3.max(mineralData.filter(d => d.type === selectedMineral), d => +d.quantity);
-    const legendScale = d3.scaleLinear()
-      .domain([0, maxValue])
+    const legendScale = d3.scaleLog()
+      .domain([1, maxValue])
       .range([0, legendWidth]);
 
     const legendAxis = d3.axisBottom(legendScale)
-      .ticks(5)
+      .ticks(5, ",.1s") // Format ticks for logarithmic scale
       .tickFormat(d => `${d}`);
 
     legendSvg.append("g")
