@@ -150,8 +150,8 @@ function Glb() {
   useEffect(() => {
     if (selectedCountry && extractionData && reserveData) {
       plotGraph(selectedCountry);
+      plotPollutionChart();
     }
-    plotPollutionChart();
   }, [selectedCountry, selectedMineral, extractionData, reserveData]);
 
   const getColor = (country) => {
@@ -215,8 +215,17 @@ function Glb() {
     const countryExtractionData = extractionData.find(d => d.country === country && d.type === selectedMineral);
     const countryReserveData = reserveData.find(d => d.country === country && d.type === selectedMineral);
 
+    const graphSvg = d3.select(graphRef.current);
+    graphSvg.selectAll("*").remove(); // Clear existing graph
+
     if (!countryExtractionData || !countryReserveData) {
-      console.log(`No data found for ${country} and mineral ${selectedMineral}`);
+      graphSvg.append("text")
+        .attr("x", "50%")
+        .attr("y", "50%")
+        .attr("text-anchor", "middle")
+        .attr("fill", "white")
+        .style("font-size", "20px")
+        .text("No information");
       return;
     }
 
@@ -228,9 +237,6 @@ function Glb() {
     console.log(`Years: ${years}`);
     console.log(`Extraction values: ${extractionValues}`);
     console.log(`Reserve values: ${reserveValues}`);
-
-    const graphSvg = d3.select(graphRef.current);
-    graphSvg.selectAll("*").remove(); // Clear existing graph
 
     const margin = { top: 60, right: 60, bottom: 70, left: 60 };
     const width = 500 - margin.left - margin.right;
@@ -317,52 +323,19 @@ function Glb() {
     const width = 500 - margin.left - margin.right;
     const height = 300 - margin.top - margin.bottom;
 
-    const x = d3.scaleBand()
-      .domain(data.map(d => d.pollution))
-      .range([0, width])
-      .padding(0.1);
-
-    const y = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.description.length)])
-      .range([height, 0]);
-
     const g = svg.append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    g.selectAll(".bar")
+    // Add the pollution information as text
+    g.selectAll(".pollution-info")
       .data(data)
-      .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", d => x(d.pollution))
-      .attr("y", d => y(d.description.length))
-      .attr("width", x.bandwidth())
-      .attr("height", d => height - y(d.description.length))
-      .attr("fill", "#69b3a2")
-      .on('mouseover', (event, d) => {
-        d3.select(event.currentTarget).style("opacity", 0.7);
-        g.append("text")
-          .attr("class", "tooltip")
-          .attr("x", x(d.pollution) + x.bandwidth() / 2)
-          .attr("y", y(d.description.length) - 10)
-          .attr("text-anchor", "middle")
-          .attr("fill", "white")
-          .text(d.description);
-      })
-      .on('mouseout', (event, d) => {
-        d3.select(event.currentTarget).style("opacity", 1);
-        g.select(".tooltip").remove();
-      });
-
-    // Add the x-axis
-    g.append("g")
-      .attr("class", "x-axis")
-      .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(x));
-
-    // Add the y-axis
-    g.append("g")
-      .attr("class", "y-axis")
-      .call(d3.axisLeft(y));
+      .enter().append("text")
+      .attr("class", "pollution-info")
+      .attr("x", 10)
+      .attr("y", (d, i) => i * 30)
+      .attr("fill", "white")
+      .style("font-size", "14px")
+      .text(d => `${d.pollution}: ${d.description}`);
 
     // Add the chart title
     svg.append("text")
@@ -390,12 +363,16 @@ function Glb() {
       </div>
       <svg ref={legendRef} width={300} height={30} style={{ marginBottom: '10px' }}></svg>
       <svg ref={globeRef} width={800} height={800}></svg>
-      <div className="graph-container" style={{ position: 'absolute', top: '50px', right: '10px', width: '500px', height: '300px' }}>
-        <svg ref={graphRef} width="100%" height="100%"></svg>
-      </div>
-      <div className="pollution-chart" style={{ position: 'absolute', top: '400px', right: '10px', width: '500px', height: '300px' }}>
-        <svg ref={pollutionRef} width="100%" height="100%"></svg>
-      </div>
+      {selectedCountry && (
+        <div>
+          <div className="graph-container" style={{ position: 'absolute', top: '50px', right: '10px', width: '500px', height: '300px' }}>
+            <svg ref={graphRef} width="100%" height="100%"></svg>
+          </div>
+          <div className="pollution-chart" style={{ position: 'absolute', top: '400px', right: '10px', width: '500px', height: '300px' }}>
+            <svg ref={pollutionRef} width="100%" height="100%"></svg>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
