@@ -104,7 +104,7 @@ function Glb() {
   const plotGraph = (country) => {
     if (!evolvProdData) return;
 
-    const countryData = evolvProdData.filter(d => d.country === country);
+    const countryData = evolvProdData.filter(d => d.country === country && d.type === selectedEnergy);
     if (countryData.length === 0) return;
 
     const graphSvg = d3.select(graphRef.current);
@@ -114,23 +114,26 @@ function Glb() {
     const width = 500 - margin.left - margin.right;
     const height = 300 - margin.top - margin.bottom;
 
+    const years = Object.keys(countryData[0]).slice(2).map(year => +year);
+    const values = years.map(year => +countryData[0][year]);
+
     const x = d3.scaleLinear()
-      .domain(d3.extent(countryData, d => +d.year))
+      .domain(d3.extent(years))
       .range([0, width]);
 
     const y = d3.scaleLinear()
-      .domain([0, d3.max(countryData, d => +d[selectedEnergy])])
+      .domain([0, d3.max(values)])
       .range([height, 0]);
 
     const line = d3.line()
-      .x(d => x(+d.year))
-      .y(d => y(+d[selectedEnergy]));
+      .x((d, i) => x(years[i]))
+      .y(d => y(d));
 
     const g = graphSvg.append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     g.append("path")
-      .datum(countryData)
+      .datum(values)
       .attr("fill", "none")
       .attr("stroke", "white")
       .attr("stroke-width", 1.5)
