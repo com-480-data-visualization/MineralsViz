@@ -184,6 +184,14 @@ function Glb() {
     const extractionValues = years.map(year => +countryExtractionData[year] || 0);
     const reserveValues = years.map(year => +countryReserveData[year] || 0);
 
+    console.log(`Years: ${years}`);
+    console.log(`Extraction values: ${extractionValues}`);
+    console.log(`Reserve values: ${reserveValues}`);
+
+    const filteredYears = years.filter((year, i) => !isNaN(extractionValues[i]) && !isNaN(reserveValues[i]));
+    const filteredExtractionValues = extractionValues.filter(value => !isNaN(value));
+    const filteredReserveValues = reserveValues.filter(value => !isNaN(value));
+
     const graphSvg = d3.select(graphRef.current);
     graphSvg.selectAll("*").remove(); // Clear existing graph
 
@@ -192,33 +200,33 @@ function Glb() {
     const height = 300 - margin.top - margin.bottom;
 
     const x = d3.scaleLinear()
-      .domain(d3.extent(years))
+      .domain(d3.extent(filteredYears))
       .range([0, width]);
 
     const y = d3.scaleLinear()
-      .domain([0, d3.max([...extractionValues, ...reserveValues])])
+      .domain([0, d3.max([...filteredExtractionValues, ...filteredReserveValues])])
       .range([height, 0]);
 
     const lineExtraction = d3.line()
-      .x((d, i) => x(years[i]))
-      .y((d, i) => y(extractionValues[i]));
+      .x((d, i) => x(filteredYears[i]))
+      .y((d, i) => y(filteredExtractionValues[i]));
 
     const lineReserve = d3.line()
-      .x((d, i) => x(years[i]))
-      .y((d, i) => y(reserveValues[i]));
+      .x((d, i) => x(filteredYears[i]))
+      .y((d, i) => y(filteredReserveValues[i]));
 
     const g = graphSvg.append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     g.append("path")
-      .datum(extractionValues)
+      .datum(filteredExtractionValues)
       .attr("fill", "none")
       .attr("stroke", "blue")
       .attr("stroke-width", 1.5)
       .attr("d", lineExtraction);
 
     g.append("path")
-      .datum(reserveValues)
+      .datum(filteredReserveValues)
       .attr("fill", "none")
       .attr("stroke", "red")
       .attr("stroke-width", 1.5)
