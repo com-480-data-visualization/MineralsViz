@@ -102,10 +102,20 @@ function Glb() {
   };
 
   const plotGraph = (country) => {
-    if (!evolvProdData) return;
+    if (!evolvProdData) {
+      console.log("Evolution production data is not loaded yet.");
+      return;
+    }
+
+    console.log(`Plotting graph for ${country} and energy ${selectedEnergy}`);
 
     const countryData = evolvProdData.filter(d => d.country === country && d.type === selectedEnergy);
-    if (countryData.length === 0) return;
+    if (countryData.length === 0) {
+      console.log(`No data found for ${country} and energy ${selectedEnergy}`);
+      return;
+    }
+
+    console.log(`Data found for ${country}:`, countryData);
 
     const graphSvg = d3.select(graphRef.current);
     graphSvg.selectAll("*").remove(); // Clear existing graph
@@ -116,6 +126,9 @@ function Glb() {
 
     const years = Object.keys(countryData[0]).slice(2).map(year => +year);
     const values = years.map(year => +countryData[0][year]);
+
+    console.log(`Years: ${years}`);
+    console.log(`Values: ${values}`);
 
     const x = d3.scaleLinear()
       .domain(d3.extent(years))
