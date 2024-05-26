@@ -321,7 +321,7 @@ function Glb() {
 
     const width = 500;
     const height = 300;
-    const bubbleRadius = 100; // Increased bubble radius
+    const bubbleRadius = 110; // Increased bubble radius
 
     const color = d3.scaleOrdinal()
       .domain(data.map(d => d.pollution))
@@ -336,8 +336,8 @@ function Glb() {
       .attr("class", "bubble")
       .attr("transform", (d, i) => {
         const angle = (i / data.length) * 2 * Math.PI;
-        const x = Math.cos(angle) * 150; // Closer bubbles
-        const y = Math.sin(angle) * 150; // Closer bubbles
+        const x = Math.cos(angle) * 130; // Closer bubbles
+        const y = Math.sin(angle) * 130; // Closer bubbles
         return `translate(${x},${y})`;
       });
 
@@ -349,17 +349,17 @@ function Glb() {
 
     bubble.append("text")
       .attr("text-anchor", "middle")
-      .attr("dy", ".3em")
+      .attr("dy", ".35em")
       .attr("fill", "white")
-      .style("font-size", "12px") // Adjusted font size
+      .style("font-size", "14px") // Increased font size
       .style("font-weight", "bold")
       .text(d => d.pollution)
-      .call(wrapText, bubbleRadius * 2); // Wrap text inside the bubble
+      .call(wrapText, bubbleRadius * 1.8); // Wrap text inside the bubble
 
     bubble.on("mouseover", function(event, d) {
-      d3.select(this).select("text").text(d.description);
+      d3.select(this).select("text").text(d.description).call(wrapText, bubbleRadius * 1.8);
     }).on("mouseout", function(event, d) {
-      d3.select(this).select("text").text(d.pollution);
+      d3.select(this).select("text").text(d.pollution).call(wrapText, bubbleRadius * 1.8);
     });
 
     // Add the chart title
@@ -418,7 +418,7 @@ function Glb() {
           <div className="graph-container" style={{ position: 'absolute', top: '50px', right: '10px', width: '500px', height: '300px' }}>
             <svg ref={graphRef} width="100%" height="100%"></svg>
           </div>
-          <div className="pollution-chart" style={{ position: 'absolute', top: '400px', right: '10px', width: '500px', height: '300px' }}>
+          <div className="pollution-chart" style={{ position: 'absolute', top: '400px', right: '10px', width: '500px', height:'300px' }}>
             <svg ref={pollutionRef} width="100%" height="100%"></svg>
           </div>
         </div>
