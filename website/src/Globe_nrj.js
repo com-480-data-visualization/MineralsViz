@@ -14,7 +14,6 @@ function Glb() {
   const isDragging = useRef(false);
 
   useEffect(() => {
-    // Function to draw the globe and countries
     const drawGlobe = (countries, projection, path) => {
       const svg = d3.select(globeRef.current);
       svg.selectAll(".country").remove(); // Clear existing paths
@@ -61,28 +60,24 @@ function Glb() {
       });
     };
 
-    // Function to initialize the globe
     const initializeGlobe = () => {
       const svg = d3.select(globeRef.current);
 
       const width = 800;
       const height = 800;
 
-      // Projection of the globe
       const projection = d3.geoOrthographic()
         .scale(300)
         .translate([width / 2, height / 2]);
 
       const path = d3.geoPath().projection(projection);
 
-      // Add ocean background as a circle
       svg.append("circle")
         .attr("cx", width / 2)
         .attr("cy", height / 2)
         .attr("r", projection.scale())
-        .attr("fill", "#add8e6"); // Ocean color
+        .attr("fill", "#add8e6");
 
-      // Load world data and draw globe
       d3.json("https://unpkg.com/world-atlas@2.0.2/countries-110m.json").then(data => {
         const countries = topojson.feature(data, data.objects.countries);
         drawGlobe(countries, projection, path);
@@ -90,7 +85,33 @@ function Glb() {
     };
 
     initializeGlobe();
-  }, []); // Empty dependency array to run only once on mount
+  }, []);
+
+  useEffect(() => {
+    d3.csv("data/renewable_prod.csv").then(data => {
+      console.log("Loaded renewable production data:", data);
+      setRenewableProdData(data);
+    });
+
+    d3.csv("data/evolv_prod_renewable.csv").then(data => {
+      console.log("Loaded evolution production data:", data);
+      setEvolvProdData(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (renewableProdData) {
+      createLegend();
+      const svg = d3.select(globeRef.current);
+      svg.selectAll(".country").attr("fill", d => getColor(d.properties.name));
+    }
+  }, [selectedEnergy, renewableProdData]);
+
+  useEffect(() => {
+    if (selectedCountry && evolvProdData) {
+      plotGraph(selectedCountry);
+    }
+  }, [selectedCountry, evolvProdData, selectedEnergy]);
 
   const getColor = (country) => {
     if (!renewableProdData) return 'white';
@@ -101,7 +122,6 @@ function Glb() {
     const colorScale = d3.scaleLinear()
       .domain([0, maxValue])
       .range(["#e5ffe5", "#006400"]);
-    console.log(`Country: ${country}, Value: ${value}, Color: ${colorScale(value)}`);
     return colorScale(value);
   };
 
@@ -172,7 +192,6 @@ function Glb() {
       .text(`Evolution of ${selectedEnergy} Production in ${country}`);
   };
 
-  // Create a legend for the color scale
   const createLegend = () => {
     const legendSvg = d3.select(legendRef.current);
     legendSvg.selectAll("*").remove(); // Clear existing legend
@@ -216,28 +235,6 @@ function Glb() {
       .attr("transform", `translate(0,${legendHeight})`)
       .call(legendAxis);
   };
-
-  useEffect(() => {
-    // Load renewable production data
-    d3.csv("data/renewable_prod.csv").then(data => {
-      console.log("Loaded renewable production data:", data);
-      setRenewableProdData(data);
-    });
-
-    // Load evolution production data
-    d3.csv("data/evolv_prod_renewable.csv").then(data => {
-      console.log("Loaded evolution production data:", data);
-      setEvolvProdData(data);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (renewableProdData) {
-      createLegend();
-      const svg = d3.select(globeRef.current);
-      svg.selectAll(".country").attr("fill", d => getColor(d.properties.name));
-    }
-  }, [selectedEnergy, renewableProdData]);
 
   return (
     <div className="GlobeContainer">
