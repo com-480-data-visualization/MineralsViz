@@ -365,10 +365,10 @@ function Glb() {
     // Add the chart title
     svg.append("text")
       .attr("x", width / 2)
-      .attr("y", 20)
+      .attr("y", 25)
       .attr("text-anchor", "middle")
-      .style("font-size", "16px")
-      .style("text-decoration", "underline")
+      .style("font-size", "20px")
+      .style("text-decoration", "underline", "bold")
       .attr("fill", "white")
       .text(`Pollution Metrics for ${selectedMineral}`);
   };
