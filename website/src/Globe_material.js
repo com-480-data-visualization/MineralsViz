@@ -5,12 +5,7 @@ import './styles.css';
 
 function Glb() {
   const globeRef = useRef(null);
-  const productionChartRef = useRef(null);
-  const consumptionChartRef = useRef(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
-  const [temperatureData, setTemperatureData] = useState(null);
-  const [productionData, setProductionData] = useState(null);
-  const [consumptionData, setConsumptionData] = useState(null);
   const [selectedYear, setSelectedYear] = useState(1971); // Default year
   const isDragging = useRef(false);
 
@@ -82,24 +77,11 @@ function Glb() {
       drawGlobe(countries);
     });
 
-  }, [selectedYear]); // Re-run the effect when the selected year changes
+  }, []); // Re-run the effect when the selected year changes
 
   return (
     <div className="GlobeContainer">
       <svg ref={globeRef} width={800} height={800}></svg>
-      <div className="yearSlider" style={{ marginTop: '20px' }}>
-        <label htmlFor="year">Select Year:</label>
-        <input 
-          type="range" 
-          id="year" 
-          name="year" 
-          min="1971" 
-          max="2013" 
-          value={selectedYear} 
-          onChange={e => setSelectedYear(+e.target.value)} // Convert value to number
-        />
-        <span>{selectedYear}</span>
-      </div>
     </div>
   );
 }

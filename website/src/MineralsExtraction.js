@@ -1,5 +1,5 @@
 import React from 'react';
-import Globe from './Globe';
+import Glb from './Globe_material';
 import './styles.css';
 import { Link } from 'react-router-dom';
 
@@ -10,7 +10,7 @@ function MineralsExtraction() {
             <h2>Mineral Extraction</h2>
             <p>Lorem ipsum...</p>
             <div className="content">
-                <Globe />
+                <Glb />
 
             </div>
             <div className="navigation-buttons">
