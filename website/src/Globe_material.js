@@ -7,12 +7,51 @@ function Glb() {
   const globeRef = useRef(null);
   const legendRef = useRef(null);
   const graphRef = useRef(null);
+  const pollutionRef = useRef(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedMineral, setSelectedMineral] = useState('Lithium'); // Default mineral
   const [mineralData, setMineralData] = useState(null);
   const [extractionData, setExtractionData] = useState(null);
   const [reserveData, setReserveData] = useState(null);
   const isDragging = useRef(false);
+
+  const pollutionData = {
+    'Lithium': {
+      'CO2 Emissions': '1.3 to 5 tonnes of CO2',
+      'Water Consumption': '500,000 gallons of water per tonne of lithium',
+      'Groundwater Contamination': 'Contamination of groundwater and soils'
+    },
+    'Nickel': {
+      'CO2 Emissions': '10 to 30 tonnes of CO2',
+      'Heavy Metal Releases': 'Heavy metal and acid releases',
+      'Toxic Mine Residues': 'Toxic mine residues'
+    },
+    'Copper': {
+      'CO2 Emissions': '2 to 3 tonnes of CO2',
+      'Heavy Metal Waste': 'Heavy metal-containing mine waste',
+      'Acid Use': 'Use of acids for leaching'
+    },
+    'Zinc': {
+      'CO2 Emissions': '2.5 to 3 tonnes of CO2',
+      'Heavy Metal Waste': 'Heavy metal-containing mine waste',
+      'Dust Production': 'Dust production'
+    },
+    'Alumina': {
+      'CO2 Emissions': '10 to 14 tonnes of CO2',
+      'Red Mud Residues': 'Red mud residues',
+      'Deforestation': 'Deforestation'
+    },
+    'Silver': {
+      'CO2 Emissions': '20 tonnes of CO2',
+      'Cyanide Use': 'Use of cyanide',
+      'Toxic Mine Waste': 'Toxic mine waste'
+    },
+    'Lead': {
+      'CO2 Emissions': '1.5 to 2 tonnes of CO2',
+      'Heavy Metal Waste': 'Heavy metal-containing mine waste',
+      'Dust Production': 'Dust production'
+    }
+  };
 
   useEffect(() => {
     const svg = d3.select(globeRef.current);
@@ -111,6 +150,7 @@ function Glb() {
   useEffect(() => {
     if (selectedCountry && extractionData && reserveData) {
       plotGraph(selectedCountry);
+      plotPollutionChart();
     }
   }, [selectedCountry, selectedMineral, extractionData, reserveData]);
 
@@ -263,6 +303,99 @@ function Glb() {
       .text(`${selectedMineral} Extraction and Reserves in ${country}`);
   };
 
+  const plotPollutionChart = () => {
+    const pollutionInfo = pollutionData[selectedMineral];
+    const data = Object.keys(pollutionInfo).map(key => ({
+      pollution: key,
+      description: pollutionInfo[key]
+    }));
+
+    const width = 500;
+    const height = 300;
+    const radius = Math.min(width, height) / 2;
+
+    const svg = d3.select(pollutionRef.current)
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", `translate(${width / 2},${height / 2})`);
+
+    const color = d3.scaleOrdinal()
+      .domain(data.map(d => d.pollution))
+      .range(d3.schemeCategory10);
+
+    const pie = d3.pie()
+      .value(d => d.description.length) // Arbitrary value, could be adjusted for different purposes
+      .sort(null);
+
+    const arc = d3.arc()
+      .innerRadius(radius * 0.5)
+      .outerRadius(radius * 0.8);
+
+    const outerArc = d3.arc()
+      .innerRadius(radius * 0.9)
+      .outerRadius(radius * 0.9);
+
+    svg.selectAll('allSlices')
+      .data(pie(data))
+      .enter()
+      .append('path')
+      .attr('d', arc)
+      .attr('fill', d => color(d.data.pollution))
+      .attr("stroke", "white")
+      .style("stroke-width", "2px")
+      .on('mouseover', (event, d) => {
+        d3.select(event.currentTarget).style("opacity", 0.7);
+        svg.append("text")
+          .attr("class", "tooltip")
+          .attr("text-anchor", "middle")
+          .attr("dy", "-1.5em")
+          .attr("fill", "white")
+          .text(d.data.pollution)
+          .append("tspan")
+          .attr("x", 0)
+          .attr("dy", "1.2em")
+          .text(d.data.description);
+      })
+      .on('mouseout', (event, d) => {
+        d3.select(event.currentTarget).style("opacity", 1);
+        svg.select(".tooltip").remove();
+      });
+
+    svg.selectAll('allPolylines')
+      .data(pie(data))
+      .enter()
+      .append('polyline')
+      .attr("stroke", "white")
+      .style("fill", "none")
+      .attr("stroke-width", 1)
+      .attr('points', d => {
+        const posA = arc.centroid(d);
+        const posB = outerArc.centroid(d);
+        const posC = outerArc.centroid(d);
+        const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+        posC[0] = radius * 0.95 * (midangle < Math.PI ? 1 : -1);
+        return [posA, posB, posC];
+      });
+
+    svg.selectAll('allLabels')
+      .data(pie(data))
+      .enter()
+      .append('text')
+      .attr('transform', d => {
+        const pos = outerArc.centroid(d);
+        const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+        pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
+        return `translate(${pos})`;
+      })
+      .attr('text-anchor', d => {
+        const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+        return (midangle < Math.PI ? 'start' : 'end');
+      })
+      .attr("fill", "white")
+      .text(d => d.data.pollution);
+  };
+
   return (
     <div className="GlobeContainer">
       <div className="mineral-buttons">
@@ -280,6 +413,9 @@ function Glb() {
       <svg ref={globeRef} width={800} height={800}></svg>
       <div className="graph-container" style={{ position: 'absolute', top: '50px', right: '10px', width: '500px', height: '300px' }}>
         <svg ref={graphRef} width="100%" height="100%"></svg>
+      </div>
+      <div className="pollution-chart" style={{ position: 'absolute', top: '400px', right: '10px', width: '500px', height: '300px' }}>
+        <svg ref={pollutionRef} width="100%" height="100%"></svg>
       </div>
     </div>
   );
