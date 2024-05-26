@@ -319,28 +319,49 @@ function Glb() {
     const svg = d3.select(pollutionRef.current);
     svg.selectAll("*").remove(); // Clear existing chart
 
-    const margin = { top: 40, right: 30, bottom: 70, left: 60 };
-    const width = 500 - margin.left - margin.right;
-    const height = 300 - margin.top - margin.bottom;
+    const width = 500;
+    const height = 300;
+    const bubbleRadius = 50;
+
+    const color = d3.scaleOrdinal()
+      .domain(data.map(d => d.pollution))
+      .range(d3.schemePastel1);
 
     const g = svg.append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+      .attr("transform", `translate(${width / 2},${height / 2})`);
 
-    // Add the pollution information as text
-    g.selectAll(".pollution-info")
+    const bubble = g.selectAll(".bubble")
       .data(data)
-      .enter().append("text")
-      .attr("class", "pollution-info")
-      .attr("x", 10)
-      .attr("y", (d, i) => i * 30)
-      .attr("fill", "white")
-      .style("font-size", "14px")
-      .text(d => `${d.pollution}: ${d.description}`);
+      .enter().append("g")
+      .attr("class", "bubble")
+      .attr("transform", (d, i) => {
+        const angle = (i / data.length) * 2 * Math.PI;
+        const x = Math.cos(angle) * 150;
+        const y = Math.sin(angle) * 150;
+        return `translate(${x},${y})`;
+      });
+
+    bubble.append("circle")
+      .attr("r", bubbleRadius)
+      .attr("fill", d => color(d.pollution))
+      .attr("stroke", "white")
+      .attr("stroke-width", 2);
+
+    bubble.append("text")
+      .attr("text-anchor", "middle")
+      .attr("dy", ".3em")
+      .attr("fill", "black")
+      .style("font-size", "12px")
+      .style("font-weight", "bold")
+      .text(d => d.pollution);
+
+    bubble.append("title")
+      .text(d => d.description);
 
     // Add the chart title
     svg.append("text")
-      .attr("x", width / 2 + margin.left)
-      .attr("y", margin.top / 2)
+      .attr("x", width / 2)
+      .attr("y", 20)
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
       .style("text-decoration", "underline")
