@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/MineralsViz/static/css/main.843689dd.css",
-    "main.js": "/MineralsViz/static/js/main.36e83201.js",
+    "main.js": "/MineralsViz/static/js/main.ae051bf4.js",
     "static/media/ciel_etoile.avif": "/MineralsViz/static/media/ciel_etoile.63ea6824479139a16a1d.avif",
     "index.html": "/MineralsViz/index.html",
     "main.843689dd.css.map": "/MineralsViz/static/css/main.843689dd.css.map",
-    "main.36e83201.js.map": "/MineralsViz/static/js/main.36e83201.js.map"
+    "main.ae051bf4.js.map": "/MineralsViz/static/js/main.ae051bf4.js.map"
   },
   "entrypoints": [
     "static/css/main.843689dd.css",
-    "static/js/main.36e83201.js"
+    "static/js/main.ae051bf4.js"
   ]
 }
