@@ -192,7 +192,7 @@ function Glb() {
     const graphSvg = d3.select(graphRef.current);
     graphSvg.selectAll("*").remove(); // Clear existing graph
 
-    const margin = { top: 60, right: 50, bottom: 70, left: 50 };
+    const margin = { top: 60, right: 60, bottom: 70, left: 60 };
     const width = 500 - margin.left - margin.right;
     const height = 300 - margin.top - margin.bottom;
 
@@ -257,16 +257,16 @@ function Glb() {
       .attr("x", width / 2)
       .attr("y", -20)
       .attr("text-anchor", "middle")
-      .style("font-size", "16px")
+      .style("font-size", "14px")
       .style("text-decoration", "underline")
       .attr("fill", "white")
-      .text(`Evolution of ${selectedMineral} Extraction and Reserves in ${country}`);
+      .text(`${selectedMineral} Extraction and Reserves in ${country}`);
   };
 
   return (
     <div className="GlobeContainer">
       <div className="mineral-buttons">
-        {['Lithium', 'Cobalt', 'Nickel', 'Copper'].map(mineral => (
+        {['Lithium', 'Nickel', 'Copper', 'Alumina', 'Zinc', 'Silver', 'Lead'].map(mineral => (
           <button
             key={mineral}
             onClick={() => setSelectedMineral(mineral)}
