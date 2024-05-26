@@ -150,8 +150,8 @@ function Glb() {
   useEffect(() => {
     if (selectedCountry && extractionData && reserveData) {
       plotGraph(selectedCountry);
-      plotPollutionChart();
     }
+    plotPollutionChart();
   }, [selectedCountry, selectedMineral, extractionData, reserveData]);
 
   const getColor = (country) => {
@@ -310,90 +310,69 @@ function Glb() {
       description: pollutionInfo[key]
     }));
 
-    const width = 500;
-    const height = 300;
-    const radius = Math.min(width, height) / 2;
+    const svg = d3.select(pollutionRef.current);
+    svg.selectAll("*").remove(); // Clear existing chart
 
-    const svg = d3.select(pollutionRef.current)
-      .attr("width", width)
-      .attr("height", height)
-      .append("g")
-      .attr("transform", `translate(${width / 2},${height / 2})`);
+    const margin = { top: 40, right: 30, bottom: 70, left: 60 };
+    const width = 500 - margin.left - margin.right;
+    const height = 300 - margin.top - margin.bottom;
 
-    const color = d3.scaleOrdinal()
+    const x = d3.scaleBand()
       .domain(data.map(d => d.pollution))
-      .range(d3.schemeCategory10);
+      .range([0, width])
+      .padding(0.1);
 
-    const pie = d3.pie()
-      .value(d => d.description.length) // Arbitrary value, could be adjusted for different purposes
-      .sort(null);
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(data, d => d.description.length)])
+      .range([height, 0]);
 
-    const arc = d3.arc()
-      .innerRadius(radius * 0.5)
-      .outerRadius(radius * 0.8);
+    const g = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    const outerArc = d3.arc()
-      .innerRadius(radius * 0.9)
-      .outerRadius(radius * 0.9);
-
-    svg.selectAll('allSlices')
-      .data(pie(data))
-      .enter()
-      .append('path')
-      .attr('d', arc)
-      .attr('fill', d => color(d.data.pollution))
-      .attr("stroke", "white")
-      .style("stroke-width", "2px")
+    g.selectAll(".bar")
+      .data(data)
+      .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", d => x(d.pollution))
+      .attr("y", d => y(d.description.length))
+      .attr("width", x.bandwidth())
+      .attr("height", d => height - y(d.description.length))
+      .attr("fill", "#69b3a2")
       .on('mouseover', (event, d) => {
         d3.select(event.currentTarget).style("opacity", 0.7);
-        svg.append("text")
+        g.append("text")
           .attr("class", "tooltip")
+          .attr("x", x(d.pollution) + x.bandwidth() / 2)
+          .attr("y", y(d.description.length) - 10)
           .attr("text-anchor", "middle")
-          .attr("dy", "-1.5em")
           .attr("fill", "white")
-          .text(d.data.pollution)
-          .append("tspan")
-          .attr("x", 0)
-          .attr("dy", "1.2em")
-          .text(d.data.description);
+          .text(d.description);
       })
       .on('mouseout', (event, d) => {
         d3.select(event.currentTarget).style("opacity", 1);
-        svg.select(".tooltip").remove();
+        g.select(".tooltip").remove();
       });
 
-    svg.selectAll('allPolylines')
-      .data(pie(data))
-      .enter()
-      .append('polyline')
-      .attr("stroke", "white")
-      .style("fill", "none")
-      .attr("stroke-width", 1)
-      .attr('points', d => {
-        const posA = arc.centroid(d);
-        const posB = outerArc.centroid(d);
-        const posC = outerArc.centroid(d);
-        const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
-        posC[0] = radius * 0.95 * (midangle < Math.PI ? 1 : -1);
-        return [posA, posB, posC];
-      });
+    // Add the x-axis
+    g.append("g")
+      .attr("class", "x-axis")
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(x));
 
-    svg.selectAll('allLabels')
-      .data(pie(data))
-      .enter()
-      .append('text')
-      .attr('transform', d => {
-        const pos = outerArc.centroid(d);
-        const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
-        pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
-        return `translate(${pos})`;
-      })
-      .attr('text-anchor', d => {
-        const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
-        return (midangle < Math.PI ? 'start' : 'end');
-      })
+    // Add the y-axis
+    g.append("g")
+      .attr("class", "y-axis")
+      .call(d3.axisLeft(y));
+
+    // Add the chart title
+    svg.append("text")
+      .attr("x", width / 2 + margin.left)
+      .attr("y", margin.top / 2)
+      .attr("text-anchor", "middle")
+      .style("font-size", "16px")
+      .style("text-decoration", "underline")
       .attr("fill", "white")
-      .text(d => d.data.pollution);
+      .text(`Pollution Metrics for ${selectedMineral}`);
   };
 
   return (
