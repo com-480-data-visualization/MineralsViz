@@ -180,7 +180,8 @@ function Glb() {
       return;
     }
 
-    const years = Object.keys(countryExtractionData).slice(2).map(year => +year); // Assuming year columns start from index 2
+    // Filter out data before 2006
+    const years = Object.keys(countryExtractionData).slice(2).map(year => +year).filter(year => year >= 2006);
     const extractionValues = years.map(year => +countryExtractionData[year] || 0);
     const reserveValues = years.map(year => +countryReserveData[year] || 0);
 
@@ -188,59 +189,70 @@ function Glb() {
     console.log(`Extraction values: ${extractionValues}`);
     console.log(`Reserve values: ${reserveValues}`);
 
-    const filteredYears = years.filter((year, i) => !isNaN(extractionValues[i]) && !isNaN(reserveValues[i]));
-    const filteredExtractionValues = extractionValues.filter(value => !isNaN(value));
-    const filteredReserveValues = reserveValues.filter(value => !isNaN(value));
-
     const graphSvg = d3.select(graphRef.current);
     graphSvg.selectAll("*").remove(); // Clear existing graph
 
-    const margin = { top: 60, right: 30, bottom: 70, left: 50 };
+    const margin = { top: 60, right: 50, bottom: 70, left: 50 };
     const width = 500 - margin.left - margin.right;
     const height = 300 - margin.top - margin.bottom;
 
     const x = d3.scaleLinear()
-      .domain(d3.extent(filteredYears))
+      .domain(d3.extent(years))
       .range([0, width]);
 
-    const y = d3.scaleLinear()
-      .domain([0, d3.max([...filteredExtractionValues, ...filteredReserveValues])])
+    const yExtraction = d3.scaleLinear()
+      .domain([0, d3.max(extractionValues)])
+      .range([height, 0]);
+
+    const yReserve = d3.scaleLinear()
+      .domain([0, d3.max(reserveValues)])
       .range([height, 0]);
 
     const lineExtraction = d3.line()
-      .x((d, i) => x(filteredYears[i]))
-      .y((d, i) => y(filteredExtractionValues[i]));
-
-    const lineReserve = d3.line()
-      .x((d, i) => x(filteredYears[i]))
-      .y((d, i) => y(filteredReserveValues[i]));
+      .x((d, i) => x(years[i]))
+      .y((d, i) => yExtraction(extractionValues[i]));
 
     const g = graphSvg.append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
+    // Add the extraction line
     g.append("path")
-      .datum(filteredExtractionValues)
+      .datum(extractionValues)
       .attr("fill", "none")
       .attr("stroke", "blue")
       .attr("stroke-width", 1.5)
       .attr("d", lineExtraction);
 
-    g.append("path")
-      .datum(filteredReserveValues)
-      .attr("fill", "none")
-      .attr("stroke", "red")
-      .attr("stroke-width", 1.5)
-      .attr("d", lineReserve);
+    // Add the reserve bars
+    g.selectAll(".bar")
+      .data(reserveValues)
+      .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", (d, i) => x(years[i]) - 10)
+      .attr("y", d => yReserve(d))
+      .attr("width", 20)
+      .attr("height", d => height - yReserve(d))
+      .attr("fill", "red")
+      .attr("opacity", 0.5);
 
+    // Add the x-axis
     g.append("g")
       .attr("class", "x-axis")
       .attr("transform", `translate(0,${height})`)
       .call(d3.axisBottom(x).tickFormat(d3.format("d")));
 
+    // Add the left y-axis for extraction
     g.append("g")
       .attr("class", "y-axis")
-      .call(d3.axisLeft(y));
+      .call(d3.axisLeft(yExtraction));
 
+    // Add the right y-axis for reserves
+    g.append("g")
+      .attr("class", "y-axis y-axis--reserve")
+      .attr("transform", `translate(${width},0)`)
+      .call(d3.axisRight(yReserve));
+
+    // Add the graph title
     g.append("text")
       .attr("x", width / 2)
       .attr("y", -20)
