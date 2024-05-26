@@ -30,11 +30,6 @@ function Glb() {
           svg.selectAll(".country").attr("stroke", null); // Remove previous border
           d3.select(this).attr("stroke", "black"); // Highlight selected country
           globeRef.current.classList.add('shifted');
-          if (evolvProdData) {
-            plotGraph(d.properties.name);
-          } else {
-            console.log("Evolution production data is not loaded yet.");
-          }
         });
 
       svg.on("mousemove", function (event) {
@@ -122,6 +117,7 @@ function Glb() {
     const colorScale = d3.scaleLinear()
       .domain([0, maxValue])
       .range(["#e5ffe5", "#006400"]);
+    console.log(`Country: ${country}, Value: ${value}, Color: ${colorScale(value)}`);
     return colorScale(value);
   };
 
@@ -251,7 +247,7 @@ function Glb() {
       </div>
       <svg ref={legendRef} width={300} height={30} style={{ marginBottom: '10px' }}></svg>
       <svg ref={globeRef} width={800} height={800}></svg>
-      <div ref={graphRef} style={{ position: 'absolute', top: '10px', right: '10px', width: '500px', height: '300px' }}></div>
+      <div ref={graphRef} style={{ position: 'absolute', top: '20px', right: '10px', width: '500px', height: '300px' }}></div>
     </div>
   );
 }
