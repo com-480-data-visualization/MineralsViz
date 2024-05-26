@@ -250,7 +250,7 @@ function Glb() {
       </div>
       <svg ref={legendRef} width={300} height={30} style={{ marginBottom: '10px' }}></svg>
       <svg ref={globeRef} width={800} height={800}></svg>
-      <svg ref={graphRef} width={500} height={300} style={{ position: 'absolute', top: '10px', right: '10px' }}></svg>
+      <svg ref={graphRef} width={500} height={300} style={{ position: 'absolute', top: '50px', right: '10px' }}></svg>
     </div>
   );
 }
