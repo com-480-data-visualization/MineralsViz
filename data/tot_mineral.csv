@@ -1,0 +1,288 @@
+country,type,quantity
+Argentina,Bulk,369281144.0
+Argentina,Copper,2042282.2689999999
+Argentina,Gold,237449777.254
+Argentina,Lead,12276.023
+Argentina,Silver,4995.985
+Argentina,Zinc,47608.601
+Australia,Bauxite,717585000.0
+Australia,Bulk,1094156577.0
+Australia,Cobalt,26500.0
+Australia,Copper,222880248.65
+Australia,Diamonds,64.048
+Australia,Gold,1073435533.995
+Australia,Ilminite,18524371.0
+Australia,Iron,8775248255.0
+Australia,Lead,8471417.736
+Australia,Leucoxene,169891.0
+Australia,Lithium,11608228.315000001
+Australia,Nickel,53544242.8
+Australia,Oxide,2064559.0
+Australia,Rutile,3072989.0
+Australia,Silver,13263037.518000001
+Australia,Sulphide,28000.0
+Australia,Tentalum,15.312
+Australia,Tin,8592673.857
+Australia,Triuranium,123179.583
+Australia,Zinc,87652844.384
+Australia,Zircon,6861759.0
+Bolivia,Bulk,3826232.0
+Bolivia,Copper,5276.459
+Bolivia,Gold,0.044
+Bolivia,Lead,4810.528
+Bolivia,Silver,13513215.492
+Bolivia,Zinc,70397.417
+Bosnia and Herzegovina,Iron,31966000.0
+Brazil,Bauxite,322840000.0
+Brazil,Bulk,262902989.0
+Brazil,Copper,365169176.06
+Brazil,Gold,680588616.873
+Brazil,Iron,6202820905.0
+Brazil,Manganese,42566000.0
+Brazil,Nickel,47750286.6
+Brazil,Niobium,6416300.0
+Brazil,Phosphate,20800900.0
+Brazil,Potash,5695000.0
+Brazil,Silver,52.546
+Brazil,Sodium,66900.0
+Canada,Bulk,407319241.0
+Canada,Cobalt,6300.0
+Canada,Copper,945098291.904
+Canada,Diamonds,32.983000000000004
+Canada,Gold,204450514.018
+Canada,Iron,1006392504.8
+Canada,Lead,474849.347
+Canada,Molybdenum,50620.909
+Canada,Nickel,42769589.3
+Canada,Palladium,26.313000000000002
+Canada,Platinum,13.436
+Canada,Rhodium,0.902
+Canada,Silver,4550.485
+Canada,Zinc,22807767.363
+Chile,Bulk,765221681.0
+Chile,Copper,5164679836.355
+Chile,Gold,200239461.896
+Chile,Iron,102966000.0
+Chile,Molybdenum,685305.824
+Chile,Oxide,141947800.0
+Chile,Silver,11493.994
+Chile,Sulphide,323189700.0
+China,Bauxite,187040100.0
+China,Copper,1390357.46
+China,Gold,282.546
+China,Iron,3674819.0
+China,Lead,56282.0
+China,Manganese,17393687.0
+China,Silver,668.527
+China,Zinc,1053179.38
+Colombia,Nickel,6881656.232
+Cote d'Ivoire,Bulk,34214000.0
+Cote d'Ivoire,Gold,4657624.093
+Cote d'Ivoire,Silver,2.162
+Cuba,Cobalt,68160.0
+Cuba,Laterite,36180000.0
+Cuba,Nickel,641969.0
+DR Congo,Bulk,83120099.0
+DR Congo,Cobalt,329810.0
+DR Congo,Copper,38788308.0
+DR Congo,Gold,36444537.043
+DR Congo,Oxide,4895000.0
+DR Congo,Sulphide,13493000.0
+Dominican Republic,Gold,41934440.51
+Dominican Republic,Nickel,12115700.0
+Egypt,Gold,53577048.76800001
+Finland,Bulk,71229116.0
+Finland,Cobalt,1456.0
+Finland,Copper,258034.0
+Finland,Gold,54.875
+Finland,Nickel,70418.0
+Finland,Palladium,5.522
+Finland,Platinum,7.229
+Finland,Silver,2.1270000000000002
+Finland,Zinc,131044.0
+Gabon,Manganese,6946050.0
+Ghana,Bauxite,1236000.0
+Ghana,Gold,391028743.244
+Ghana,Oxide,3328679.0
+Guatemala,Bulk,18396800.0
+Guatemala,Gold,78.1
+Guatemala,Lead,25100.0
+Guatemala,Silver,3351.589
+Guatemala,Zinc,42100.0
+Guinea,Bauxite,241862000.0
+Guinea,Gold,153410061.156
+Guyana,Bauxite,15543111.0
+Guyana,Gold,3319794.551
+Honduras,Gold,22421087.433000002
+India,Alumina,6036651.479
+India,Bauxite,82048327.0
+India,Bulk,121091568.0
+India,Iron,40860000.0
+India,Lead,1520370.815
+India,Zinc,9744583.35
+Indonesia,Bauxite,18069004.0
+Indonesia,Bulk,44657840.0
+Indonesia,Copper,15220135.38
+Indonesia,Gold,456554099.291
+Indonesia,Nickel,82635076.0
+Indonesia,Silver,562.652
+Ireland,Bulk,67510588.0
+Ireland,Lead,798375.736
+Ireland,Silver,27.265
+Ireland,Zinc,5550510.71
+Jamaica,Bauxite,31269787.0
+Kazakhstan,Bulk,38654000.0
+Kazakhstan,Copper,353493036.5
+Kazakhstan,Gold,228.265
+Kazakhstan,Iron,16319750.0
+Kazakhstan,Lead,384100.0
+Kazakhstan,Oxide,48136000.0
+Kazakhstan,Silver,6061.339
+Kazakhstan,Sulphide,39112000.0
+Kazakhstan,Zinc,4199432.6
+Kyrgyzstan,Copper,3694965.0700000003
+Kyrgyzstan,Gold,9.123000000000001
+Kyrgyzstan,Silver,28.178
+Laos,Bulk,9156605.0
+Laos,Copper,11133821.0
+Laos,Gold,3482614.087
+Laos,Silver,3.347
+Liberia,Iron,48843500.0
+Madagascar,Cobalt,21032.0
+Madagascar,Nickel,259664.33299999998
+Malaysia,Gold,7.661
+Mali,Gold,194727319.277
+Mauritania,Copper,426160.0
+Mauritania,Gold,109202062.358
+Mauritania,Sulphide,37635000.0
+Mexico,Bulk,1726609809.0
+Mexico,Copper,5501753.415
+Mexico,Gold,223140027.992
+Mexico,Iron,132707000.0
+Mexico,Lead,1313261.05
+Mexico,Molybdenum,153340.0
+Mexico,Oxide,1778139900.0
+Mexico,Silver,28910.139
+Mexico,Sulphide,244298200.0
+Mexico,Zinc,3216202.849
+Mongolia,Copper,868400.0
+Mongolia,Gold,55.049
+Mongolia,Silver,153.766
+Namibia,Gold,19600029.682
+Namibia,Triuranium,50076.984000000004
+Namibia,Zinc,22617235.792
+New Caledonia,Nickel,20563911.0
+New Zealand,Gold,117630207.66
+New Zealand,Silver,1.079
+Papua New Guinea,Bulk,73200000.0
+Papua New Guinea,Copper,342452776.0
+Papua New Guinea,Gold,212864342.137
+Papua New Guinea,Silver,509.992
+Peru,Bulk,2279966029.0
+Peru,Copper,510522053.688
+Peru,Gold,843443577.384
+Peru,IronS,668301.0
+Peru,Lead,1839076.78
+Peru,Molybdenum,335234.544
+Peru,Oxide,971108008.0
+Peru,Phosphate,10090000.0
+Peru,Silver,28765.188000000002
+Peru,Zinc,10126629.645
+Philippines,Bulk,1188703.0
+Philippines,Copper,135969.0
+Philippines,Gold,27880838.612
+Philippines,Nickel,189922622.0
+Philippines,Silver,51.85
+Poland,Copper,1398900.0
+Portugal,Bulk,2329387.0
+Portugal,Copper,35763248.0
+Portugal,Lead,29187.0
+Portugal,Silver,447.36199999999997
+Portugal,Tin,1749.0
+Portugal,Zinc,9616043.0
+Russian Federation,Bauxite,64570000.0
+Russian Federation,Bulk,359486730.0
+Russian Federation,Copper,5345892.238
+Russian Federation,Gold,16115208.012
+Russian Federation,Iron,1144465345.667
+Russian Federation,Lead,7450.0
+Russian Federation,Nepheline,44880000.0
+Russian Federation,Nickel,31764979.724
+Russian Federation,PGM,1524.854
+Russian Federation,Silver,1839.2440000000001
+Russian Federation,Zinc,318652.0
+Saudi Arabia,Bauxite,19521911.0
+Saudi Arabia,Copper,52616.715
+Sierra Leone,Ilminite,171300.0
+Sierra Leone,Rutile,426300.0
+Sierra Leone,Zircon,22900.0
+South Africa,Antimony,12338.593
+South Africa,Bulk,105595618.0
+South Africa,Chromium,12512000.0
+South Africa,Cobalt,9905.0
+South Africa,Copper,918382.0
+South Africa,Fluorspar,3386145.0
+South Africa,Gold,323794725.724
+South Africa,Ilminite,5161700.0
+South Africa,Iridium,6.623
+South Africa,Iron,526550500.0
+South Africa,Lead,741291.875
+South Africa,Manganese,44683000.0
+South Africa,Nickel,207542.0
+South Africa,PGM,261.259
+South Africa,Palladium,128.484
+South Africa,Phosphate,139004000.0
+South Africa,Platinum,244.6
+South Africa,Rhodium,20.064
+South Africa,Ruthenium,27.849
+South Africa,Rutile,424000.0
+South Africa,Triuranium,31.0
+South Africa,Zinc,642549.372
+South Africa,Zircon,1347500.0
+Spain,Bulk,13775608.0
+Spain,Copper,9480909.911
+Spain,Nickel,66685.966
+Suriname,Bauxite,10000000.0
+Suriname,Gold,46406049.401999995
+Sweden,Bulk,69346464.0
+Sweden,Copper,502541265.0
+Sweden,Gold,80.66499999999999
+Sweden,Lead,1137792.0
+Sweden,Silver,6286.287
+Sweden,Tellurium,213.465
+Sweden,Zinc,14584580.0
+Tajikistan,Gold,20.241
+Tanzania,Copper,44408.962
+Tanzania,Gold,180964513.869
+Turkey,Bulk,7141000.0
+Turkey,Copper,146923.0
+Turkey,Zinc,114602.0
+Ukraine,Iron,397018606.0
+United States of America,Bulk,404518857.0
+United States of America,Copper,2069617843.49
+United States of America,Gold,1878554114.53
+United States of America,Ilminite,2688642.0
+United States of America,Iron,401630000.0
+United States of America,Lead,2004661.802
+United States of America,Leucoxene,81459.0
+United States of America,Molybdenum,499833.884
+United States of America,Nickel,108729.0
+United States of America,PGM,30.139
+United States of America,Phosphate,2194000.0
+United States of America,Rutile,61758.0
+United States of America,Silver,1008630.962
+United States of America,Zinc,10058305.559
+United States of America,Zircon,766058.0
+Venezuela,Nickel,10519200.0
+Zambia,Bulk,78163000.0
+Zambia,Cobalt,1500.0
+Zambia,Copper,209883957.204
+Zambia,Gold,40.687
+Zambia,Oxide,65959000.0
+Zambia,Sulphide,105750000.0
+Zimbabwe,Diamonds,0.575
+Zimbabwe,Gold,0.255
+Zimbabwe,PGM,30.696
+Zimbabwe,Palladium,4.351
+Zimbabwe,Phosphate,6586000.0
+Zimbabwe,Platinum,9.377
