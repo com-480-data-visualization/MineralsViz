@@ -90,19 +90,21 @@ function Glb() {
 
   const getColor = (country) => {
     if (!renewableProdData) return 'white';
-    const countryData = renewableProdData.find(d => d.Country === country);
+    const countryData = renewableProdData.find(d => d.country === country);
     if (!countryData) return 'white';
     const value = +countryData[selectedEnergy];
+    const maxValue = d3.max(renewableProdData, d => +d[selectedEnergy]);
     const colorScale = d3.scaleLinear()
-      .domain([0, d3.max(renewableProdData, d => +d[selectedEnergy])])
+      .domain([0, maxValue])
       .range(["#e5ffe5", "#006400"]);
+    console.log(`Country: ${country}, Value: ${value}, Color: ${colorScale(value)}`);
     return colorScale(value);
   };
 
   const plotGraph = (country) => {
     if (!evolvProdData) return;
 
-    const countryData = evolvProdData.filter(d => d.Country === country);
+    const countryData = evolvProdData.filter(d => d.country === country);
     if (countryData.length === 0) return;
 
     const graphSvg = d3.select(graphRef.current);
@@ -113,7 +115,7 @@ function Glb() {
     const height = 300 - margin.top - margin.bottom;
 
     const x = d3.scaleLinear()
-      .domain(d3.extent(countryData, d => +d.Year))
+      .domain(d3.extent(countryData, d => +d.year))
       .range([0, width]);
 
     const y = d3.scaleLinear()
@@ -121,7 +123,7 @@ function Glb() {
       .range([height, 0]);
 
     const line = d3.line()
-      .x(d => x(+d.Year))
+      .x(d => x(+d.year))
       .y(d => y(+d[selectedEnergy]));
 
     const g = graphSvg.append("g")
