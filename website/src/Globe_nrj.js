@@ -147,7 +147,7 @@ function Glb() {
     console.log(`Values: ${values}`);
 
     const x = d3.scaleLinear()
-      .domain(d3.extent(years))
+      .domain(years)
       .range([0, width]);
 
     const y = d3.scaleLinear()
