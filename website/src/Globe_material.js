@@ -321,7 +321,7 @@ function Glb() {
 
     const width = 500;
     const height = 300;
-    const bubbleRadius = 50;
+    const bubbleRadius = 70; // Increased bubble radius
 
     const color = d3.scaleOrdinal()
       .domain(data.map(d => d.pollution))
@@ -336,8 +336,8 @@ function Glb() {
       .attr("class", "bubble")
       .attr("transform", (d, i) => {
         const angle = (i / data.length) * 2 * Math.PI;
-        const x = Math.cos(angle) * 150;
-        const y = Math.sin(angle) * 150;
+        const x = Math.cos(angle) * 120; // Closer bubbles
+        const y = Math.sin(angle) * 120; // Closer bubbles
         return `translate(${x},${y})`;
       });
 
@@ -350,13 +350,16 @@ function Glb() {
     bubble.append("text")
       .attr("text-anchor", "middle")
       .attr("dy", ".3em")
-      .attr("fill", "black")
-      .style("font-size", "12px")
+      .attr("fill", "white")
+      .style("font-size", "14px") // Increased font size
       .style("font-weight", "bold")
       .text(d => d.pollution);
 
-    bubble.append("title")
-      .text(d => d.description);
+    bubble.on("mouseover", function(event, d) {
+      d3.select(this).select("text").text(d.description);
+    }).on("mouseout", function(event, d) {
+      d3.select(this).select("text").text(d.pollution);
+    });
 
     // Add the chart title
     svg.append("text")
