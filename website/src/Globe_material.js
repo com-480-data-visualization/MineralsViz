@@ -321,7 +321,7 @@ function Glb() {
 
     const width = 500;
     const height = 300;
-    const bubbleRadius = 70; // Increased bubble radius
+    const bubbleRadius = 100; // Increased bubble radius
 
     const color = d3.scaleOrdinal()
       .domain(data.map(d => d.pollution))
@@ -336,8 +336,8 @@ function Glb() {
       .attr("class", "bubble")
       .attr("transform", (d, i) => {
         const angle = (i / data.length) * 2 * Math.PI;
-        const x = Math.cos(angle) * 120; // Closer bubbles
-        const y = Math.sin(angle) * 120; // Closer bubbles
+        const x = Math.cos(angle) * 150; // Closer bubbles
+        const y = Math.sin(angle) * 150; // Closer bubbles
         return `translate(${x},${y})`;
       });
 
@@ -351,9 +351,10 @@ function Glb() {
       .attr("text-anchor", "middle")
       .attr("dy", ".3em")
       .attr("fill", "white")
-      .style("font-size", "14px") // Increased font size
+      .style("font-size", "12px") // Adjusted font size
       .style("font-weight", "bold")
-      .text(d => d.pollution);
+      .text(d => d.pollution)
+      .call(wrapText, bubbleRadius * 2); // Wrap text inside the bubble
 
     bubble.on("mouseover", function(event, d) {
       d3.select(this).select("text").text(d.description);
@@ -371,6 +372,31 @@ function Glb() {
       .attr("fill", "white")
       .text(`Pollution Metrics for ${selectedMineral}`);
   };
+
+  // Function to wrap text inside a circle
+  function wrapText(text, width) {
+    text.each(function() {
+      const text = d3.select(this);
+      const words = text.text().split(/\s+/).reverse();
+      let word;
+      let line = [];
+      let lineNumber = 0;
+      const lineHeight = 1.1; // ems
+      const y = text.attr("y");
+      const dy = parseFloat(text.attr("dy"));
+      let tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", `${dy}em`);
+      while (word = words.pop()) {
+        line.push(word);
+        tspan.text(line.join(" "));
+        if (tspan.node().getComputedTextLength() > width) {
+          line.pop();
+          tspan.text(line.join(" "));
+          line = [word];
+          tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", `${++lineNumber * lineHeight + dy}em`).text(word);
+        }
+      }
+    });
+  }
 
   return (
     <div className="GlobeContainer">
