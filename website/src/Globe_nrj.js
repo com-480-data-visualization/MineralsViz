@@ -117,6 +117,7 @@ function Glb() {
     const colorScale = d3.scaleLinear()
       .domain([0, maxValue])
       .range(["#e5ffe5", "#006400"]);
+    console.log(`Country: ${country}, Value: ${value}, Color: ${colorScale(value)}`);
     return colorScale(value);
   };
 
@@ -147,7 +148,7 @@ function Glb() {
     console.log(`Values: ${values}`);
 
     const x = d3.scaleLinear()
-      .domain(years)
+      .domain(d3.extent(years))
       .range([0, width]);
 
     const y = d3.scaleLinear()
@@ -249,7 +250,7 @@ function Glb() {
       </div>
       <svg ref={legendRef} width={300} height={30} style={{ marginBottom: '10px' }}></svg>
       <svg ref={globeRef} width={800} height={800}></svg>
-      <div ref={graphRef} style={{ position: 'absolute', top: '10px', right: '10px', width: '500px', height: '300px', color: 'white' }}></div>
+      <svg ref={graphRef} width={500} height={300} style={{ position: 'absolute', top: '10px', right: '10px' }}></svg>
     </div>
   );
 }
