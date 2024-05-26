@@ -6,9 +6,12 @@ import './styles.css';
 function Glb() {
   const globeRef = useRef(null);
   const legendRef = useRef(null);
+  const graphRef = useRef(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedMineral, setSelectedMineral] = useState('Lithium'); // Default mineral
   const [mineralData, setMineralData] = useState(null);
+  const [extractionData, setExtractionData] = useState(null);
+  const [reserveData, setReserveData] = useState(null);
   const isDragging = useRef(false);
 
   useEffect(() => {
@@ -42,7 +45,7 @@ function Glb() {
         .attr("id", d => `country-${d.id}`) // Add a unique ID to each country
         .on("mousedown", function (event, d) {
           isDragging.current = true;
-          setSelectedCountry(d);
+          setSelectedCountry(d.properties.name);
           svg.selectAll(".country").attr("stroke", null); // Remove previous border
           d3.select(this).attr("stroke", "black"); // Highlight selected country
           globeRef.current.classList.add('shifted');
@@ -83,6 +86,18 @@ function Glb() {
       setMineralData(data);
     });
 
+    // Load extraction data
+    d3.csv("data/extraction_mineral_v2.csv").then(data => {
+      console.log("Loaded extraction data:", data);
+      setExtractionData(data);
+    });
+
+    // Load reserve data
+    d3.csv("data/reserve.csv").then(data => {
+      console.log("Loaded reserve data:", data);
+      setReserveData(data);
+    });
+
   }, []);
 
   useEffect(() => {
@@ -92,6 +107,12 @@ function Glb() {
       createLegend();
     }
   }, [selectedMineral, mineralData]);
+
+  useEffect(() => {
+    if (selectedCountry && extractionData && reserveData) {
+      plotGraph(selectedCountry);
+    }
+  }, [selectedCountry, selectedMineral, extractionData, reserveData]);
 
   const getColor = (country) => {
     if (!mineralData) return 'white';
@@ -150,6 +171,78 @@ function Glb() {
       .call(legendAxis);
   };
 
+  const plotGraph = (country) => {
+    const countryExtractionData = extractionData.find(d => d.country === country && d.type === selectedMineral);
+    const countryReserveData = reserveData.find(d => d.country === country && d.type === selectedMineral);
+
+    if (!countryExtractionData || !countryReserveData) {
+      console.log(`No data found for ${country} and mineral ${selectedMineral}`);
+      return;
+    }
+
+    const years = Object.keys(countryExtractionData).slice(2).map(year => +year); // Assuming year columns start from index 2
+    const extractionValues = years.map(year => +countryExtractionData[year] || 0);
+    const reserveValues = years.map(year => +countryReserveData[year] || 0);
+
+    const graphSvg = d3.select(graphRef.current);
+    graphSvg.selectAll("*").remove(); // Clear existing graph
+
+    const margin = { top: 60, right: 30, bottom: 70, left: 50 };
+    const width = 500 - margin.left - margin.right;
+    const height = 300 - margin.top - margin.bottom;
+
+    const x = d3.scaleLinear()
+      .domain(d3.extent(years))
+      .range([0, width]);
+
+    const y = d3.scaleLinear()
+      .domain([0, d3.max([...extractionValues, ...reserveValues])])
+      .range([height, 0]);
+
+    const lineExtraction = d3.line()
+      .x((d, i) => x(years[i]))
+      .y(d => y(extractionValues[i]));
+
+    const lineReserve = d3.line()
+      .x((d, i) => x(years[i]))
+      .y(d => y(reserveValues[i]));
+
+    const g = graphSvg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    g.append("path")
+      .datum(extractionValues)
+      .attr("fill", "none")
+      .attr("stroke", "blue")
+      .attr("stroke-width", 1.5)
+      .attr("d", lineExtraction);
+
+    g.append("path")
+      .datum(reserveValues)
+      .attr("fill", "none")
+      .attr("stroke", "red")
+      .attr("stroke-width", 1.5)
+      .attr("d", lineReserve);
+
+    g.append("g")
+      .attr("class", "x-axis")
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+
+    g.append("g")
+      .attr("class", "y-axis")
+      .call(d3.axisLeft(y));
+
+    g.append("text")
+      .attr("x", width / 2)
+      .attr("y", -20)
+      .attr("text-anchor", "middle")
+      .style("font-size", "16px")
+      .style("text-decoration", "underline")
+      .attr("fill", "white")
+      .text(`Evolution of ${selectedMineral} Extraction and Reserves in ${country}`);
+  };
+
   return (
     <div className="GlobeContainer">
       <div className="mineral-buttons">
@@ -157,7 +250,7 @@ function Glb() {
           <button
             key={mineral}
             onClick={() => setSelectedMineral(mineral)}
-            style={{ backgroundColor: selectedMineral === mineral ? 'lightgreen' : 'white' }}
+            style={{ backgroundColor: selectedMineral === mineral ? 'grey' : 'white' }}
           >
             {mineral}
           </button>
@@ -165,6 +258,7 @@ function Glb() {
       </div>
       <svg ref={legendRef} width={300} height={30} style={{ marginBottom: '10px' }}></svg>
       <svg ref={globeRef} width={800} height={800}></svg>
+      <svg ref={graphRef} width={500} height={300} style={{ position: 'absolute', top: '10px', right: '10px', color: 'white' }}></svg>
     </div>
   );
 }
