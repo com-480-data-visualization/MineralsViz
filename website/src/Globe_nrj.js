@@ -132,7 +132,7 @@ function Glb() {
     g.append("path")
       .datum(countryData)
       .attr("fill", "none")
-      .attr("stroke", "green")
+      .attr("stroke", "white")
       .attr("stroke-width", 1.5)
       .attr("d", line);
 
