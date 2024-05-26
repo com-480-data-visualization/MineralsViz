@@ -31,7 +31,11 @@ function Glb() {
           svg.selectAll(".country").attr("stroke", null); // Remove previous border
           d3.select(this).attr("stroke", "black"); // Highlight selected country
           globeRef.current.classList.add('shifted');
-          plotGraph(d.properties.name);
+          if (evolvProdData) {
+            plotGraph(d.properties.name);
+          } else {
+            console.log("Evolution production data is not loaded yet.");
+          }
         });
 
       svg.on("mousemove", function (event) {
@@ -102,10 +106,7 @@ function Glb() {
   };
 
   const plotGraph = (country) => {
-    if (!evolvProdData) {
-      console.log("Evolution production data is not loaded yet.");
-      return;
-    }
+    if (!evolvProdData) return;
 
     console.log(`Plotting graph for ${country} and energy ${selectedEnergy}`);
 
@@ -219,11 +220,13 @@ function Glb() {
   useEffect(() => {
     // Load renewable production data
     d3.csv("data/renewable_prod.csv").then(data => {
+      console.log("Loaded renewable production data:", data);
       setRenewableProdData(data);
     });
 
     // Load evolution production data
     d3.csv("data/evolv_prod_renewable.csv").then(data => {
+      console.log("Loaded evolution production data:", data);
       setEvolvProdData(data);
     });
   }, []);
