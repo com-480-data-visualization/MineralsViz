@@ -316,7 +316,7 @@ function Glb() {
       .outerRadius(radius - 1);
 
     const pie = d3.pie()
-      .value(d => Math.max(d.quantity, arcMinAngle)) // Ensure a minimum value to avoid zero arc size
+      .value(d => Math.max(25, arcMinAngle)) // Ensure a minimum value to avoid zero arc size
       .sort(null);
 
     const g = svg.append("g")
