@@ -296,7 +296,7 @@ function Glb() {
     const width = 300;
     const height = 300;
     const radius = Math.min(width, height) / 2;
-    const arcMinAngle = Math.PI ; // Increased minimum arc angle
+    const arcMinAngle = Math.PI / 18; // Increased minimum arc angle
 
     const color = d3.scaleOrdinal()
       .domain(data.map(d => d.mineral))
@@ -307,7 +307,7 @@ function Glb() {
       .outerRadius(radius - 1);
 
     const pie = d3.pie()
-      .value(d => Math.max(d.quantity, 0.5)) // Ensure a minimum value to avoid zero arc size
+      .value(d => Math.max(d.quantity, 5)) // Ensure a minimum value to avoid zero arc size
       .sort(null);
 
     const g = svg.append("g")
