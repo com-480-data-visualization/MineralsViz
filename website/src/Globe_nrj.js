@@ -305,7 +305,7 @@ function Glb() {
     const width = 400;
     const height = 400;
     const radius = Math.min(width, height) / 2;
-    const arcMinAngle = 10; // Ensure minimum arc size
+    const arcMinAngle = 25; // Ensure minimum arc size
 
     const color = d3.scaleOrdinal()
       .domain(data.map(d => d.mineral))
