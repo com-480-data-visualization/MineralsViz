@@ -1,4 +1,4 @@
-country,Wind,Solar (%),Hydro,Other
+country,Wind,Solar,Hydro,Other
 United States of America,11.2,4.8,6.5,2.5
 China,7.5,3.9,16.8,1.4
 India,4.5,3.3,10.2,1.1
@@ -82,3 +82,53 @@ Namibia,0.1,0.5,1.0,0.2
 Rwanda,0.1,0.1,0.1,0.2
 Saint Kitts and Nevis,0.1,0.5,1.0,0.3
 Saint Vincent and the Grenadines,0.2,0.5,0.5,0.1
+Afghanistan,0.1,0.1,5.0,0.2
+Algeria,0.2,0.1,0.5,0.1
+Bangladesh,0.1,0.5,0.1,0.3
+Belarus,0.5,0.3,0.1,0.1
+Bolivia,0.5,0.1,40.0,0.5
+Botswana,0.1,0.2,0.5,0.1
+Burkina Faso,0.2,0.5,0.3,0.1
+Cameroon,0.5,0.1,70.0,0.5
+Central African Republic,0.1,0.1,0.5,0.1
+Chad,0.1,0.1,0.5,0.1
+Cuba,0.2,0.5,5.0,0.3
+Democratic Republic of the Congo,0.2,0.1,95.0,0.2
+Dominican Republic,0.5,0.5,7.0,0.5
+Fiji,0.1,0.3,60.0,1.0
+Gambia,0.1,0.1,0.5,0.1
+Ghana,0.2,0.1,40.0,0.5
+Guatemala,0.2,0.5,50.0,7.0
+Haiti,0.1,0.2,10.0,0.3
+Honduras,0.2,0.5,50.0,5.0
+Iraq,0.1,0.1,1.0,0.1
+Jamaica,0.2,0.5,2.0,0.5
+Jordan,0.5,2.0,0.5,0.2
+Kazakhstan,0.5,1.0,10.0,0.5
+Kuwait,0.1,0.1,0.5,0.1
+Kyrgyzstan,0.1,0.1,90.0,0.2
+Laos,0.1,0.1,85.0,0.2
+Lebanon,0.1,0.1,10.0,0.2
+Libya,0.1,0.1,0.5,0.1
+Madagascar,0.1,0.1,50.0,0.2
+Malawi,0.1,0.1,50.0,0.2
+Maldives,0.1,0.1,50.0,0.2
+Mali,0.1,0.5,0.1,0.1
+Mongolia,0.1,0.1,30.0,0.1
+Mozambique,0.5,1.0,1.0,0.5
+Namibia,0.2,0.1,80.0,0.5
+Nepal,0.1,0.5,2.0,0.5
+Niger,0.1,0.1,95.0,0.5
+Rwanda,0.1,0.1,0.5,0.1
+Senegal,0.1,0.1,50.0,0.5
+Sierra Leone,0.2,0.5,10.0,0.5
+Solomon Islands,0.2,0.1,30.0,0.3
+South Sudan,0.1,0.1,0.5,0.1
+Sudan,0.1,0.1,0.5,0.1
+Syria,0.1,0.1,0.5,0.1
+Tanzania,0.1,0.1,5.0,0.2
+Togo,0.1,0.1,1.0,0.1
+Tunisia,0.1,0.1,30.0,0.5
+Uganda,0.2,0.5,0.1,0.3
+Uzbekistan,0.2,0.5,44.0,0.5
+Uzbekistan,0.5,0.1,10.0,0.2
