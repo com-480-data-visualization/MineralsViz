@@ -177,6 +177,15 @@ function Glb() {
     const countryData = evolvProdData.filter(d => d.country === country && d.type === selectedEnergy);
     if (countryData.length === 0) {
       console.log(`No data found for ${country} and energy ${selectedEnergy}`);
+      const graphSvg = d3.select(graphRef.current);
+      graphSvg.selectAll("*").remove(); // Clear existing graph
+      const g = graphSvg.append("g")
+        .attr("transform", "translate(150,150)");
+      g.append("text")
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .style("fill", "white")
+        .text("No information");
       return;
     }
 
@@ -375,7 +384,7 @@ function Glb() {
       {selectedCountry && (
         <div>
           <svg ref={graphRef} width={500} height={300} style={{ position: 'absolute', top: '50px', right: '10px' }}></svg>
-          <svg ref={mineralsRef} width={400} height={400} style={{ position: 'absolute', top: '370px', right: '10px' }}></svg>
+          <svg ref={mineralsRef} width={400} height={400} style={{ position: 'absolute', top: '380px', right: '10px' }}></svg>
         </div>
       )}
     </div>
