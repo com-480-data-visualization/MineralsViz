@@ -7,11 +7,35 @@ function Glb() {
   const globeRef = useRef(null);
   const graphRef = useRef(null);
   const legendRef = useRef(null);
+  const mineralsRef = useRef(null); // New ref for minerals chart
   const [selectedEnergy, setSelectedEnergy] = useState('Wind');
   const [renewableProdData, setRenewableProdData] = useState(null);
   const [evolvProdData, setEvolvProdData] = useState(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const isDragging = useRef(false);
+
+  const mineralsData = {
+    'Wind': {
+      'Copper': 'High',
+      'Aluminum': 'Medium',
+      'Zinc': 'Low',
+    },
+    'Hydro': {
+      'Steel': 'High',
+      'Copper': 'Medium',
+      'Concrete': 'Low',
+    },
+    'Solar': {
+      'Silicon': 'High',
+      'Silver': 'Medium',
+      'Aluminum': 'Low',
+    },
+    'Other': {
+      'Steel': 'Medium',
+      'Copper': 'Low',
+      'Various metals and materials': 'Low'
+    }
+  };
 
   useEffect(() => {
     const drawGlobe = (countries, projection, path) => {
@@ -105,6 +129,7 @@ function Glb() {
   useEffect(() => {
     if (selectedCountry && evolvProdData) {
       plotGraph(selectedCountry);
+      plotMineralsChart();
     }
   }, [selectedCountry, evolvProdData, selectedEnergy]);
 
@@ -235,6 +260,57 @@ function Glb() {
       .call(legendAxis);
   };
 
+  const plotMineralsChart = () => {
+    const mineralsInfo = mineralsData[selectedEnergy];
+    const data = Object.keys(mineralsInfo).map(key => ({
+      mineral: key,
+      usage: mineralsInfo[key]
+    }));
+
+    const svg = d3.select(mineralsRef.current);
+    svg.selectAll("*").remove(); // Clear existing chart
+
+    const width = 500;
+    const height = 300;
+    const bubbleRadius = 10;
+
+    const xScale = d3.scaleBand()
+      .domain(Object.keys(mineralsInfo))
+      .range([0, width])
+      .padding(0.1);
+
+    const yScale = d3.scaleBand()
+      .domain(Object.keys(mineralsInfo))
+      .range([0, height])
+      .padding(0.1);
+
+    const color = d3.scaleOrdinal()
+      .domain(['Low', 'Medium', 'High'])
+      .range(['#e0e0e0', '#a0a0a0', '#606060']);
+
+    const g = svg.append("g")
+      .attr("transform", `translate(${width / 2},${height / 2})`);
+
+    g.selectAll(".bubble")
+      .data(data)
+      .enter().append("circle")
+      .attr("class", "bubble")
+      .attr("cx", d => xScale(d.mineral))
+      .attr("cy", d => yScale(d.mineral))
+      .attr("r", bubbleRadius)
+      .attr("fill", d => color(d.usage));
+
+    // Add the chart title
+    svg.append("text")
+      .attr("x", width / 2)
+      .attr("y", 20)
+      .attr("text-anchor", "middle")
+      .style("font-size", "16px")
+      .style("text-decoration", "underline")
+      .attr("fill", "white")
+      .text(`Main Minerals for ${selectedEnergy} Energy`);
+  };
+
   return (
     <div className="GlobeContainer">
       <div className="energy-buttons">
@@ -250,7 +326,12 @@ function Glb() {
       </div>
       <svg ref={legendRef} width={300} height={30} style={{ marginBottom: '10px' }}></svg>
       <svg ref={globeRef} width={800} height={800}></svg>
-      <svg ref={graphRef} width={500} height={300} style={{ position: 'absolute', top: '50px', right: '10px' }}></svg>
+      {selectedCountry && (
+        <div>
+          <svg ref={graphRef} width={500} height={300} style={{ position: 'absolute', top: '50px', right: '10px' }}></svg>
+          <svg ref={mineralsRef} width={500} height={300} style={{ position: 'absolute', top: '400px', right: '10px' }}></svg>
+        </div>
+      )}
     </div>
   );
 }

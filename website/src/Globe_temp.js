@@ -346,8 +346,6 @@ function Glb() {
 
   return (
     <div className="GlobeContainer">
-      <svg ref={legendRef} width={300} height={30} style={{ marginBottom: '10px' }}></svg>
-      <svg ref={globeRef} width={800} height={800}></svg>
       <div className="yearSlider" style={{ marginTop: '20px' }}>
         <label htmlFor="year">Select Year:</label>
         <input 
@@ -361,6 +359,8 @@ function Glb() {
         />
         <span>{selectedYear}</span>
       </div>
+      <svg ref={legendRef} width={300} height={30} style={{ marginBottom: '10px' }}></svg>
+      <svg ref={globeRef} width={800} height={800}></svg>
       <div ref={productionChartRef} style={{ position: 'absolute', top: '10px', right: '10px' }}></div>
       <div ref={consumptionChartRef} style={{ position: 'absolute', top: '360px', right: '10px' }}></div>
     </div>

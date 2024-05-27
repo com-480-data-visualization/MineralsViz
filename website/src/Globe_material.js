@@ -218,7 +218,7 @@ function Glb() {
     const graphSvg = d3.select(graphRef.current);
     graphSvg.selectAll("*").remove(); // Clear existing graph
 
-    if (!countryExtractionData || !countryReserveData) {
+    if (!countryExtractionData && !countryReserveData) {
       graphSvg.append("text")
         .attr("x", "50%")
         .attr("y", "50%")
