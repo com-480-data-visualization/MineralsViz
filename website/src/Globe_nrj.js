@@ -296,18 +296,18 @@ function Glb() {
     const width = 300;
     const height = 300;
     const radius = Math.min(width, height) / 2;
-    const arcMinAngle = Math.PI / 180; // Minimum arc angle for small slices
+    const arcMinAngle = Math.PI / 36; // Increased minimum arc angle
 
     const color = d3.scaleOrdinal()
       .domain(data.map(d => d.mineral))
-      .range(d3.schemePastel1);
+      .range(Object.values(mineralColors));
 
     const arc = d3.arc()
       .innerRadius(radius * 0.6)
       .outerRadius(radius - 1);
 
     const pie = d3.pie()
-      .value(d => Math.max(d.quantity, 0.01)) // Ensure a minimum value to avoid zero arc size
+      .value(d => Math.max(d.quantity, 0.1)) // Ensure a minimum value to avoid zero arc size
       .sort(null);
 
     const g = svg.append("g")
@@ -320,14 +320,15 @@ function Glb() {
 
     arcs.append("path")
       .attr("d", arc)
-      .attr("fill", d => color(d.data.mineral));
-
-    arcs.append("text")
-      .attr("transform", d => `translate(${arc.centroid(d)})`)
-      .attr("dy", "0.35em")
-      .attr("fill", "white")
-      .style("font-size", "10px")
-      .text(d => d.data.mineral);
+      .attr("fill", d => color(d.data.mineral))
+      .on("mouseover", function(event, d) {
+        d3.select(this).attr("stroke", "white").attr("stroke-width", 2);
+        g.select(".donut-title").text(`${d.data.quantity} tonnes`);
+      })
+      .on("mouseout", function(event, d) {
+        d3.select(this).attr("stroke", null);
+        g.select(".donut-title").text(`Main Minerals\nfor ${selectedEnergy} Energy`);
+      });
 
     arcs.append("line")
       .attr("stroke", "white")
@@ -344,15 +345,13 @@ function Glb() {
       .style("text-anchor", "middle")
       .text(d => d.data.mineral);
 
-    // Add the chart title
-    svg.append("text")
-      .attr("x", width / 2)
-      .attr("y", 20)
+    g.append("text")
+      .attr("class", "donut-title")
       .attr("text-anchor", "middle")
-      .style("font-size", "16px")
-      .style("text-decoration", "underline")
-      .attr("fill", "white")
-      .text(`Main Minerals for ${selectedEnergy} Energy`);
+      .style("font-size", "14px")
+      .style("fill", "white")
+      .text(`Main Minerals\nfor ${selectedEnergy} Energy`)
+      .attr("dy", "0.35em");
   };
 
   return (
@@ -373,7 +372,7 @@ function Glb() {
       {selectedCountry && (
         <div>
           <svg ref={graphRef} width={500} height={300} style={{ position: 'absolute', top: '50px', right: '10px' }}></svg>
-          <svg ref={mineralsRef} width={300} height={300} style={{ position: 'absolute', top: '400px', right: '10px' }}></svg>
+          <svg ref={mineralsRef} width={300} height={300} style={{ position: 'absolute', top: '370px', right: '10px' }}></svg>
         </div>
       )}
     </div>
