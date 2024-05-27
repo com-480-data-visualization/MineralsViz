@@ -296,7 +296,7 @@ function Glb() {
     const width = 300;
     const height = 300;
     const radius = Math.min(width, height) / 2;
-    const arcMinAngle = Math.PI / 36; // Increased minimum arc angle
+    const arcMinAngle = Math.PI ; // Increased minimum arc angle
 
     const color = d3.scaleOrdinal()
       .domain(data.map(d => d.mineral))
@@ -307,7 +307,7 @@ function Glb() {
       .outerRadius(radius - 1);
 
     const pie = d3.pie()
-      .value(d => Math.max(d.quantity, 0.1)) // Ensure a minimum value to avoid zero arc size
+      .value(d => Math.max(d.quantity, 0.5)) // Ensure a minimum value to avoid zero arc size
       .sort(null);
 
     const g = svg.append("g")
@@ -323,17 +323,17 @@ function Glb() {
       .attr("fill", d => color(d.data.mineral))
       .on("mouseover", function(event, d) {
         d3.select(this).attr("stroke", "white").attr("stroke-width", 2);
-        g.select(".donut-title").text(`${d.data.quantity} tonnes`);
+        g.select(".donut-title").text(`${d.data.quantity} tonnes`).style("font-size", "18px").style("font-weight", "bold");
       })
       .on("mouseout", function(event, d) {
         d3.select(this).attr("stroke", null);
-        g.select(".donut-title").text(`Main Minerals\nfor ${selectedEnergy} Energy`);
+        g.select(".donut-title").text(`Main Minerals\nfor ${selectedEnergy} Energy`).style("font-size", "14px").style("font-weight", "bold");
       });
 
     arcs.append("line")
       .attr("stroke", "white")
-      .attr("x1", d => arc.centroid(d)[0] * 2)
-      .attr("y1", d => arc.centroid(d)[1] * 2)
+      .attr("x1", d => arc.centroid(d)[0] * 1.5)
+      .attr("y1", d => arc.centroid(d)[1] * 1.5)
       .attr("x2", d => arc.centroid(d)[0] * 2.5)
       .attr("y2", d => arc.centroid(d)[1] * 2.5);
 
@@ -341,7 +341,8 @@ function Glb() {
       .attr("transform", d => `translate(${arc.centroid(d)[0] * 2.8},${arc.centroid(d)[1] * 2.8})`)
       .attr("dy", "0.35em")
       .attr("fill", "white")
-      .style("font-size", "10px")
+      .style("font-size", "12px")
+      .style("font-weight", "bold")
       .style("text-anchor", "middle")
       .text(d => d.data.mineral);
 
@@ -349,6 +350,7 @@ function Glb() {
       .attr("class", "donut-title")
       .attr("text-anchor", "middle")
       .style("font-size", "14px")
+      .style("font-weight", "bold")
       .style("fill", "white")
       .text(`Main Minerals\nfor ${selectedEnergy} Energy`)
       .attr("dy", "0.35em");
