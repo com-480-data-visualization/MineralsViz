@@ -305,7 +305,7 @@ function Glb() {
     const width = 400;
     const height = 400;
     const radius = Math.min(width, height) / 2;
-    const arcMinAngle = 0.02; // Ensure minimum arc size
+    const arcMinAngle = 0.05; // Ensure minimum arc size
 
     const color = d3.scaleOrdinal()
       .domain(data.map(d => d.mineral))
@@ -340,21 +340,13 @@ function Glb() {
       });
 
     arcs.append("text")
-      .attr("transform", d => `translate(${arc.centroid(d)[0] * 2},${arc.centroid(d)[1] * 2})`)
+      .attr("transform", d => `translate(${arc.centroid(d)})`)
       .attr("dy", "0.35em")
       .attr("fill", "white")
       .style("font-size", "12px")
       .style("font-weight", "bold")
       .style("text-anchor", "middle")
       .text(d => d.data.mineral);
-
-    arcs.append("line")
-      .attr("x1", d => arc.centroid(d)[0])
-      .attr("y1", d => arc.centroid(d)[1])
-      .attr("x2", d => arc.centroid(d)[0] * 2)
-      .attr("y2", d => arc.centroid(d)[1] * 2)
-      .attr("stroke", "white")
-      .attr("stroke-width", 1.5);
 
     g.append("text")
       .attr("class", "donut-title")
@@ -384,7 +376,7 @@ function Glb() {
       {selectedCountry && (
         <div>
           <svg ref={graphRef} width={500} height={300} style={{ position: 'absolute', top: '50px', right: '10px' }}></svg>
-          <svg ref={mineralsRef} width={400} height={400} style={{ position: 'absolute', top: '380px', right: '10px' }}></svg>
+          <svg ref={mineralsRef} width={400} height={400} style={{ position: 'absolute', top: '370px', right: '10px' }}></svg>
         </div>
       )}
     </div>
