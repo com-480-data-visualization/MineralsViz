@@ -7,7 +7,7 @@ function Glb() {
   const globeRef = useRef(null);
   const graphRef = useRef(null);
   const legendRef = useRef(null);
-  const mineralsRef = useRef(null); // New ref for minerals chart
+  const mineralsRef = useRef(null);
   const [selectedEnergy, setSelectedEnergy] = useState('Wind');
   const [renewableProdData, setRenewableProdData] = useState(null);
   const [evolvProdData, setEvolvProdData] = useState(null);
@@ -16,36 +16,48 @@ function Glb() {
 
   const mineralsData = {
     'Wind': {
-      'Acier': 49050,
-      'Cuivre': 1177,
-      'Aluminium': 654,
+      'Steel': 49050,
+      'Copper': 1177,
+      'Aluminum': 654,
       'Zinc': 164,
-      'Terres rares': 65,
+      'Rare Earths': 65,
       'Nickel': 98,
-      'Manganèse': 33
+      'Manganese': 33
     },
     'Hydro': {
-      'Acier': 45600,
-      'Cuivre': 912,
-      'Aluminium': 1140,
+      'Steel': 45600,
+      'Copper': 912,
+      'Aluminum': 1140,
       'Zinc': 228
     },
     'Solar': {
-      'Silicium': 2850,
-      'Aluminium': 14250,
-      'Cuivre': 2850,
-      'Argent': 34.2,
+      'Silicon': 2850,
+      'Aluminum': 14250,
+      'Copper': 2850,
+      'Silver': 34.2,
       'Zinc': 1710,
-      'Acier': 17100,
+      'Steel': 17100,
       'Nickel': 57
     },
     'Other': {
-      'Acier': 8450,
-      'Cuivre': 195,
+      'Steel': 8450,
+      'Copper': 195,
       'Nickel': 6.5,
-      'Aluminium': 390,
+      'Aluminum': 390,
       'Zinc': 26
     }
+  };
+
+  const mineralColors = {
+    'Steel': '#fbb4ae',
+    'Copper': '#b3cde3',
+    'Aluminum': '#ccebc5',
+    'Zinc': '#decbe4',
+    'Rare Earths': '#fed9a6',
+    'Nickel': '#ffffcc',
+    'Manganese': '#e5d8bd',
+    'Silicon': '#fddaec',
+    'Silver': '#f2f2f2'
   };
 
   useEffect(() => {
@@ -281,20 +293,21 @@ function Glb() {
     const svg = d3.select(mineralsRef.current);
     svg.selectAll("*").remove(); // Clear existing chart
 
-    const width = 500;
+    const width = 300;
     const height = 300;
     const radius = Math.min(width, height) / 2;
+    const arcMinAngle = Math.PI / 180; // Minimum arc angle for small slices
 
     const color = d3.scaleOrdinal()
       .domain(data.map(d => d.mineral))
-      .range(d3.schemeCategory10);
+      .range(d3.schemePastel1);
 
     const arc = d3.arc()
-      .innerRadius(radius * 0.5)
+      .innerRadius(radius * 0.6)
       .outerRadius(radius - 1);
 
     const pie = d3.pie()
-      .value(d => d.quantity)
+      .value(d => Math.max(d.quantity, 0.01)) // Ensure a minimum value to avoid zero arc size
       .sort(null);
 
     const g = svg.append("g")
@@ -313,7 +326,22 @@ function Glb() {
       .attr("transform", d => `translate(${arc.centroid(d)})`)
       .attr("dy", "0.35em")
       .attr("fill", "white")
-      .style("font-size", "12px")
+      .style("font-size", "10px")
+      .text(d => d.data.mineral);
+
+    arcs.append("line")
+      .attr("stroke", "white")
+      .attr("x1", d => arc.centroid(d)[0] * 2)
+      .attr("y1", d => arc.centroid(d)[1] * 2)
+      .attr("x2", d => arc.centroid(d)[0] * 2.5)
+      .attr("y2", d => arc.centroid(d)[1] * 2.5);
+
+    arcs.append("text")
+      .attr("transform", d => `translate(${arc.centroid(d)[0] * 2.8},${arc.centroid(d)[1] * 2.8})`)
+      .attr("dy", "0.35em")
+      .attr("fill", "white")
+      .style("font-size", "10px")
+      .style("text-anchor", "middle")
       .text(d => d.data.mineral);
 
     // Add the chart title
@@ -345,7 +373,7 @@ function Glb() {
       {selectedCountry && (
         <div>
           <svg ref={graphRef} width={500} height={300} style={{ position: 'absolute', top: '50px', right: '10px' }}></svg>
-          <svg ref={mineralsRef} width={500} height={300} style={{ position: 'absolute', top: '400px', right: '10px' }}></svg>
+          <svg ref={mineralsRef} width={300} height={300} style={{ position: 'absolute', top: '400px', right: '10px' }}></svg>
         </div>
       )}
     </div>
