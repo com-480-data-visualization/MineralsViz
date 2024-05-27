@@ -16,24 +16,35 @@ function Glb() {
 
   const mineralsData = {
     'Wind': {
-      'Copper': 'High',
-      'Aluminum': 'Medium',
-      'Zinc': 'Low',
+      'Acier': 49050,
+      'Cuivre': 1177,
+      'Aluminium': 654,
+      'Zinc': 164,
+      'Terres rares': 65,
+      'Nickel': 98,
+      'Manganèse': 33
     },
     'Hydro': {
-      'Steel': 'High',
-      'Copper': 'Medium',
-      'Concrete': 'Low',
+      'Acier': 45600,
+      'Cuivre': 912,
+      'Aluminium': 1140,
+      'Zinc': 228
     },
     'Solar': {
-      'Silicon': 'High',
-      'Silver': 'Medium',
-      'Aluminum': 'Low',
+      'Silicium': 2850,
+      'Aluminium': 14250,
+      'Cuivre': 2850,
+      'Argent': 34.2,
+      'Zinc': 1710,
+      'Acier': 17100,
+      'Nickel': 57
     },
     'Other': {
-      'Steel': 'Medium',
-      'Copper': 'Low',
-      'Various metals and materials': 'Low'
+      'Acier': 8450,
+      'Cuivre': 195,
+      'Nickel': 6.5,
+      'Aluminium': 390,
+      'Zinc': 26
     }
   };
 
@@ -129,7 +140,7 @@ function Glb() {
   useEffect(() => {
     if (selectedCountry && evolvProdData) {
       plotGraph(selectedCountry);
-      plotMineralsChart();
+      plotDonutChart();
     }
   }, [selectedCountry, evolvProdData, selectedEnergy]);
 
@@ -260,11 +271,11 @@ function Glb() {
       .call(legendAxis);
   };
 
-  const plotMineralsChart = () => {
+  const plotDonutChart = () => {
     const mineralsInfo = mineralsData[selectedEnergy];
     const data = Object.keys(mineralsInfo).map(key => ({
       mineral: key,
-      usage: mineralsInfo[key]
+      quantity: mineralsInfo[key]
     }));
 
     const svg = d3.select(mineralsRef.current);
@@ -272,33 +283,38 @@ function Glb() {
 
     const width = 500;
     const height = 300;
-    const bubbleRadius = 10;
-
-    const xScale = d3.scaleBand()
-      .domain(Object.keys(mineralsInfo))
-      .range([0, width])
-      .padding(0.1);
-
-    const yScale = d3.scaleBand()
-      .domain(Object.keys(mineralsInfo))
-      .range([0, height])
-      .padding(0.1);
+    const radius = Math.min(width, height) / 2;
 
     const color = d3.scaleOrdinal()
-      .domain(['Low', 'Medium', 'High'])
-      .range(['#e0e0e0', '#a0a0a0', '#606060']);
+      .domain(data.map(d => d.mineral))
+      .range(d3.schemeCategory10);
+
+    const arc = d3.arc()
+      .innerRadius(radius * 0.5)
+      .outerRadius(radius - 1);
+
+    const pie = d3.pie()
+      .value(d => d.quantity)
+      .sort(null);
 
     const g = svg.append("g")
       .attr("transform", `translate(${width / 2},${height / 2})`);
 
-    g.selectAll(".bubble")
-      .data(data)
-      .enter().append("circle")
-      .attr("class", "bubble")
-      .attr("cx", d => xScale(d.mineral))
-      .attr("cy", d => yScale(d.mineral))
-      .attr("r", bubbleRadius)
-      .attr("fill", d => color(d.usage));
+    const arcs = g.selectAll(".arc")
+      .data(pie(data))
+      .enter().append("g")
+      .attr("class", "arc");
+
+    arcs.append("path")
+      .attr("d", arc)
+      .attr("fill", d => color(d.data.mineral));
+
+    arcs.append("text")
+      .attr("transform", d => `translate(${arc.centroid(d)})`)
+      .attr("dy", "0.35em")
+      .attr("fill", "white")
+      .style("font-size", "12px")
+      .text(d => d.data.mineral);
 
     // Add the chart title
     svg.append("text")
@@ -318,7 +334,7 @@ function Glb() {
           <button
             key={energy}
             onClick={() => setSelectedEnergy(energy)}
-            style={{ backgroundColor: selectedEnergy === energy ? 'lightgreen' : 'white' }}
+            style={{ backgroundColor: selectedEnergy === energy ? 'grey' : 'white' }}
           >
             {energy}
           </button>
