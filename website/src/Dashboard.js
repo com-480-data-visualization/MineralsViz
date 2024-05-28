@@ -52,8 +52,8 @@ function Dashboard() {
     const svg = d3.select(donutRef.current);
     svg.selectAll("*").remove(); // Clear previous chart
 
-    const width = 400;
-    const height = 400;
+    const width = 200;
+    const height = 200;
     const radius = Math.min(width, height) / 2;
 
     const g = svg.append("g")
@@ -63,12 +63,12 @@ function Dashboard() {
       .value(d => d.value);
 
     const arc = d3.arc()
-      .innerRadius(radius - 70)
-      .outerRadius(radius - 20);
+      .innerRadius(radius - 35)
+      .outerRadius(radius - 10);
 
     const arcHover = d3.arc()
-      .innerRadius(radius - 70)
-      .outerRadius(radius - 10);
+      .innerRadius(radius - 35)
+      .outerRadius(radius - 5);
 
     const data = energyData.find(d => d.Scenario === selectedScenario);
     if (!data) return;
@@ -99,7 +99,7 @@ function Dashboard() {
         g.append("text")
           .attr("class", "center-text")
           .attr("text-anchor", "middle")
-          .style("font-size", "16px")
+          .style("font-size", "14px")
           .style("font-weight", "bold")
           .attr("fill", "black")
           .attr("dy", "-0.5em")
@@ -108,7 +108,7 @@ function Dashboard() {
         g.append("text")
           .attr("class", "center-text")
           .attr("text-anchor", "middle")
-          .style("font-size", "16px")
+          .style("font-size", "14px")
           .style("font-weight", "bold")
           .attr("fill", "black")
           .attr("dy", "1em")
@@ -127,10 +127,28 @@ function Dashboard() {
       .attr("transform", d => `translate(${arc.centroid(d)})`)
       .attr("dy", "0.35em")
       .style("text-anchor", "middle")
-      .style("font-size", "12px")
+      .style("font-size", "10px")
       .style("font-weight", "bold")
       .style("fill", "black")
       .text(d => `${d.data.value}%`);
+
+    // Add the legend
+    const legend = d3.select('.legend');
+    legend.selectAll("*").remove(); // Clear previous legend
+
+    legend.selectAll('tr')
+      .data(formattedData)
+      .enter()
+      .append('tr')
+      .html(d => `
+        <td><div style="width: 15px; height: 15px; background-color: ${energyColors[d.energyType]};"></div></td>
+        <td>${d.energyType}</td>
+        <td>${(d.value * 27000 / 100).toFixed(2)} TWh (2021)</td>
+        <td>${(d.value * 50000 / 100).toFixed(2)} TWh (2050)</td>
+      `)
+      .style("font-size", "12px")
+      .style("font-weight", "bold")
+      .style("color", "black");
   };
 
   return (
@@ -152,7 +170,10 @@ function Dashboard() {
         </div>
         <div className="charts-container">
           <div className="left-chart">
-            <svg ref={donutRef} width={400} height={400}></svg>
+            <svg ref={donutRef} width={200} height={200}></svg>
+          </div>
+          <div className="legend-container">
+            <table className="legend"></table>
           </div>
         </div>
       </div>
