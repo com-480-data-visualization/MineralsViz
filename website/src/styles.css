@@ -168,6 +168,17 @@ p {
     text-align: center;
   }
   
+  .charts-container {
+    display: flex;
+  }
+  
+  .left-chart {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
   
 
   /* .Dashboard {

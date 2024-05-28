@@ -1,5 +1,4 @@
-Scenario,Solar (%),Onshore Wind (%),Offshore Wind (%),Hydropower (%),Bioenergy (%),Marine Energy (%),Other Renewables (%),Nuclear (%)
+Scenario,Solar,Onshore Wind,Offshore Wind,Hydropower,Bioenergy,Marine Energy,Other Renewables,Nuclear
 M0 - 100% Renewables,40,20,18,10,2,1,9,0
 M1 - Distributed Renewables,35,22,18,10,2,1,9,13
 M23 - Centralized Renewables,32,24,18,10,2,1,9,13
-
