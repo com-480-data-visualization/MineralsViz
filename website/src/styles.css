@@ -127,7 +127,7 @@ p {
     margin-top: 10px; /* Espacement par rapport au slider */
   }
 
-  /* .Dashboard {
+  .Dashboard {
     font-family: Arial, sans-serif;
   }
   
@@ -164,4 +164,4 @@ p {
   
   .bottom-chart {
     text-align: center;
-  } */
+  }
