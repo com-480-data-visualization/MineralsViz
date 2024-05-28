@@ -190,10 +190,15 @@ p {
   .legend {
     border-collapse: collapse;
     border-spacing: 10px;
+    width: 200px;
   }
   
   .legend tr td, .legend tr th {
     padding: 5px 10px;
+  }
+  
+  .legend th {
+    border-bottom: 1px solid black;
   }
   
   .legend td:nth-child(1), .legend th:nth-child(1) {
@@ -202,7 +207,7 @@ p {
     text-align: left;
   }
   
-  .legend td:nth-child(2), .legend td
+  .legend td:nth-child(2), .legend th:nth-child(2),
   .legend td:nth-child(3), .legend th:nth-child(3) {
     text-align: center;
   }
@@ -220,3 +225,10 @@ p {
   .legend tr:last-child td::before {
     content: "* values in TWh";
   }
+  
+  .minerals-bar-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  

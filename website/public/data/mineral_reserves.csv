@@ -1,15 +1,15 @@
-Mineral,Reserves (tonnes)
-Iron (for Steel),170 billion
-Copper,870 million
-Bauxite (for Aluminium),30 billion
-Zinc,250 million
-Rare Earths,120 million
-Nickel,94 million
-Manganese,1.5 billion
-Lead,89 million
-Titanium (Ilmenite),870 million
-Silicon (Silica),Virtually unlimited
-Silver,"560,000"
-Indium,"15,000"
-Tellurium,"24,000"
-Selenium,"120,000"
+type,quantity
+Iron (for Steel),170000000000
+Copper,870000000
+Bauxite (for Aluminium),30000000000
+Zinc,250000000
+Rare Earths,120000000
+Nickel,94000000
+Manganese,1.5000000000
+Lead,89000000
+Titanium (Ilmenite),870000000
+Silicon (Silica),1000000000000
+Silver,560000
+Indium,15000
+Tellurium,24000
+Selenium,120000
