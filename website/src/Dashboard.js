@@ -32,7 +32,7 @@ function Dashboard() {
   const donutRef = useRef(null);
 
   useEffect(() => {
-    d3.csv('data/rte_scenarios_energy_mix.csv').then(data => {
+    d3.csv('/data/rte_scenarios_energy_mix.csv').then(data => {
       const scenarioList = data.map(d => d.Scenario);
       setScenarios(scenarioList);
       setSelectedScenario(scenarioList[0]); // Set default scenario
@@ -136,19 +136,39 @@ function Dashboard() {
     const legend = d3.select('.legend');
     legend.selectAll("*").remove(); // Clear previous legend
 
-    legend.selectAll('tr')
-      .data(formattedData)
-      .enter()
-      .append('tr')
-      .html(d => `
-        <td><div style="width: 15px; height: 15px; background-color: ${energyColors[d.energyType]};"></div></td>
-        <td>${d.energyType}</td>
-        <td>${(d.value * 27000 / 100).toFixed(2)} TWh (2021)</td>
-        <td>${(d.value * 50000 / 100).toFixed(2)} TWh (2050)</td>
+    legend.append('tr')
+      .html(`
+        <th>Type of Energy</th>
+        <th>2021</th>
+        <th>2050</th>
       `)
       .style("font-size", "12px")
       .style("font-weight", "bold")
-      .style("color", "black");
+      .style("color", "black")
+      .style("border-bottom", "1px solid black");
+
+    legend.selectAll('tr.data-row')
+      .data(formattedData)
+      .enter()
+      .append('tr')
+      .attr('class', 'data-row')
+      .html(d => `
+        <td style="color: ${energyColors[d.energyType]}">${d.energyType}</td>
+        <td>${Math.round(d.value * 27000 / 100)}</td>
+        <td>${Math.round(d.value * 50000 / 100)}</td>
+      `)
+      .style("font-size", "12px")
+      .style("font-weight", "bold")
+      .style("color", "black")
+      .style("border-bottom", "1px solid black");
+
+    legend.append('tr')
+      .html(`
+        <td colspan="3" style="text-align: right; font-size: 10px; color: black;">* values in TWh</td>
+      `)
+      .style("font-size", "10px")
+      .style("color", "black")
+      .style("font-weight", "normal");
   };
 
   return (

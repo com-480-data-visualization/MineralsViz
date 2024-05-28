@@ -118,13 +118,13 @@ p {
   }
   
   .slider {
-    width: 80%; /* Ajuste la largeur du slider selon tes besoins */
-    margin-top: 20px; /* Espacement par rapport au globe */
+    width: 80%; 
+    margin-top: 20px; 
   }
   
   .selected-year {
     color: white;
-    margin-top: 10px; /* Espacement par rapport au slider */
+    margin-top: 10px; 
   }
 
   .Dashboard {
@@ -192,12 +192,31 @@ p {
     border-spacing: 10px;
   }
   
-  .legend tr td {
+  .legend tr td, .legend tr th {
     padding: 5px 10px;
   }
   
-  .legend td:nth-child(2) {
+  .legend td:nth-child(1), .legend th:nth-child(1) {
     font-weight: bold;
+    color: black;
+    text-align: left;
+  }
+  
+  .legend td:nth-child(2), .legend td
+  .legend td:nth-child(3), .legend th:nth-child(3) {
+    text-align: center;
+  }
+  
+  .legend tr.data-row td:nth-child(1) {
+    color: inherit;
+  }
+  
+  .legend tr:last-child td {
+    text-align: right;
+    font-size: 10px;
     color: black;
   }
   
+  .legend tr:last-child td::before {
+    content: "* values in TWh";
+  }
