@@ -28,7 +28,9 @@ function Dashboard() {
       setMineralsData(mineralsData);
       setReservesData(reservesData);
       setPollutionData(pollutionData);
-      console.log("Data loaded:", { scenarioData, mineralsData, reservesData, pollutionData });
+      console.log("Data loaded successfully", { scenarioData, mineralsData, reservesData, pollutionData });
+    }).catch(error => {
+      console.error("Error loading data:", error);
     });
   }, []);
 
@@ -134,6 +136,11 @@ function Dashboard() {
       .rangeRound([height, 0]);
 
     const colors = d3.scaleOrdinal(d3.schemePastel1);
+
+    if (!mineralsInfo.length) {
+      console.warn("No minerals data found for selected scenario");
+      return;
+    }
 
     const keys = Object.keys(mineralsInfo[0]).slice(1);
     x0.domain(mineralsInfo.map(d => d.country));
