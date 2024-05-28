@@ -2,12 +2,18 @@ import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import './styles.css';
 
+const scenarioColors = {
+  'M0 - 100% Renewables': '#ff9999', // light red
+  'M1 - Distributed Renewables': '#99ccff', // light blue
+  'M23 - Centralized Renewables': '#99ff99' // light green
+};
+
 function Dashboard() {
   const [scenarios, setScenarios] = useState([]);
   const [selectedScenario, setSelectedScenario] = useState('');
 
   useEffect(() => {
-    d3.csv('data/rte_scenarios_energy_mix.csv').then(data => {
+    d3.csv('/data/rte_scenarios_energy_mix.csv').then(data => {
       const scenarioList = data.map(d => d.Scenario);
       setScenarios(scenarioList);
       setSelectedScenario(scenarioList[0]); // Set default scenario
@@ -18,17 +24,22 @@ function Dashboard() {
 
   return (
     <div className="Dashboard">
-      <h1 className="dashboard-title">Global Energy Scenarios Dashboard</h1>
       <div className="scenario-buttons">
         {scenarios.map(scenario => (
           <button
             key={scenario}
             onClick={() => setSelectedScenario(scenario)}
-            style={{ backgroundColor: selectedScenario === scenario ? 'lightblue' : 'white' }}
+            style={{ backgroundColor: selectedScenario === scenario ? scenarioColors[scenario] : 'white' }}
           >
             {scenario}
           </button>
         ))}
+      </div>
+      <div className="dashboard-background" style={{ backgroundColor: scenarioColors[selectedScenario] }}>
+        <div className="dashboard-header">
+          <h2 className="dashboard-title">Global Energy Scenarios Dashboard - {selectedScenario}</h2>
+        </div>
+        {/* Add your plots here */}
       </div>
     </div>
   );

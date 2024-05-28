@@ -133,9 +133,9 @@ p {
   
   .dashboard-title {
     text-align: center;
-    margin-bottom: 20px;
     font-size: 24px;
     font-weight: bold;
+    color: white;
   }
   
   .scenario-buttons {
@@ -151,6 +151,23 @@ p {
     border: none;
     border-radius: 5px;
   }
+  
+  .dashboard-background {
+    margin: 0 auto;
+    width: 80%;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+  
+  .dashboard-header {
+    background-color: rgba(0, 0, 0, 0.1); /* Slightly darker shade */
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    padding: 10px;
+    text-align: center;
+  }
+  
   
 
   /* .Dashboard {
