@@ -1,7 +1,7 @@
-type,Steel,Copper,Aluminium,Zinc,Rare Earths,Nickel,Manganese,Lead,Titanium,Concrete,Silicon,Silver
-Onshore Wind,49050,1177,654,164,65,98,33,0,0,0,0,0.0
-Offshore Wind,65000,1500,800,200,90,130,45,50,20,0,0,0.0
-Solar,17100,2850,14250,1710,0,57,0,0,0,0,2850,34.2
-Hydropower,45600,912,1140,228,0,45,0,0,0,100000,0,0.0
-Bioenergy,4020,134,390,26,0,15,0,10,0,10000,0,0.0
-Marine Energy,70000,1300,700,250,0,120,40,60,25,0,0,0.0
+type,Steel,Copper,Aluminium,Zinc,Rare Earths,Nickel,Manganese,Lead,Titanium,Silicon,Silver
+Onshore Wind,49050,1177,654,164,65,98,33,0,0,0,0.0
+Offshore Wind,65000,1500,800,200,90,130,45,50,20,0,0.0
+Solar,17100,2850,14250,1710,0,57,0,0,0,2850,34.2
+Hydropower,45600,912,1140,228,0,45,0,0,0,0,0.0
+Bioenergy,4020,134,390,26,0,15,0,10,0,0,0.0
+Marine Energy,70000,1300,700,250,0,120,40,60,25,0,0.0
