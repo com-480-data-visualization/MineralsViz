@@ -35,7 +35,7 @@ const mineralColors = {
 
 const energyTypes = [
   'Solar', 'Onshore Wind', 'Offshore Wind', 'Hydropower', 'Bioenergy', 
-  'Marine Energy'
+  'Marine Energy', 'Nuclear', 'Other Renewables'
 ];
 
 function Dashboard() {
@@ -201,7 +201,7 @@ function Dashboard() {
     const svg = d3.select(mineralsBarRef.current);
     svg.selectAll("*").remove(); // Clear previous chart
 
-    const margin = { top: 40, right: 60, bottom: 40, left: 60 };
+    const margin = { top: 40, right: 60, bottom: 80, left: 60 };
     const width = 800 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
@@ -230,7 +230,6 @@ function Dashboard() {
           });
         }
       });
-
     });
 
     const reserves = {};
@@ -267,19 +266,50 @@ function Dashboard() {
       'Reserve': '#FFFACD' // pastel yellow
     };
 
-    g.append("g")
+    const bars = g.append("g")
       .selectAll("g")
       .data(mineralsChartData)
       .enter().append("g")
-      .attr("transform", d => `translate(${x0(d.mineral)},0)`)
-      .selectAll("rect")
-      .data(d => ['2021', '2050', 'Reserve'].map(key => ({ key, value: d[key] })))
+      .attr("transform", d => `translate(${x0(d.mineral)},0)`);
+
+    bars.selectAll("rect")
+      .data(d => ['2021', '2050', 'Reserve'].map(key => ({ key, value: d[key], mineral: d.mineral })))
       .enter().append("rect")
       .attr("x", d => x1(d.key))
       .attr("y", d => y(d.value))
       .attr("width", x1.bandwidth())
       .attr("height", d => height - y(d.value))
-      .attr("fill", d => colors[d.key]);
+      .attr("fill", d => colors[d.key])
+      .on("mouseover", function(event, d) {
+        if (d.key !== 'Reserve') {
+          d3.select(this)
+            .transition()
+            .duration(200)
+            .attr("y", y(d.value) - 10)
+            .attr("height", height - y(d.value) + 10);
+
+          g.selectAll(".reserve-text").remove();
+          
+          g.append("text")
+            .attr("class", "reserve-text")
+            .attr("x", x0(d.mineral) + x1(d.key) + x1.bandwidth() / 2)
+            .attr("y", y(d.value) - 15)
+            .attr("text-anchor", "middle")
+            .style("font-size", "14px")
+            .style("font-weight", "bold")
+            .style("fill", "black")
+            .text(`${Math.round(reserves[d.mineral] / d.value)} years`);
+        }
+      })
+      .on("mouseout", function() {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr("y", y(d => d.value))
+          .attr("height", d => height - y(d.value));
+
+        g.selectAll(".reserve-text").remove();
+      });
 
     g.append("g")
       .attr("class", "axis")
@@ -292,7 +322,7 @@ function Dashboard() {
 
     // Add legend
     const legend = g.append("g")
-      .attr("transform", `translate(0, ${height + 30})`);
+      .attr("transform", `translate(0, ${height + 40})`);
 
     const legendKeys = ['2021', '2050', 'Reserve'];
     legend.selectAll("rect")
@@ -359,4 +389,3 @@ function Dashboard() {
 
 export default Dashboard;
 
-   
