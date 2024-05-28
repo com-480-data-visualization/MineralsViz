@@ -158,7 +158,7 @@ p {
     color: white;
     margin-top: 10px; 
   }
-
+  
   .Dashboard {
     font-family: Arial, sans-serif;
   }
@@ -186,16 +186,16 @@ p {
   
   .dashboard-background {
     margin: 0 auto;
-    width: 80%;
-    padding: 20px;
-    border-radius: 15px;
+    width: 90%;
+    padding: 30px;
+    border-radius: 20px;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
   }
   
   .dashboard-header {
     background-color: rgba(0, 0, 0, 0.1); /* Slightly darker shade */
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
     padding: 10px;
     text-align: center;
   }
@@ -203,6 +203,7 @@ p {
   .charts-container {
     display: flex;
     align-items: center;
+    justify-content: space-around;
   }
   
   .left-chart {
@@ -223,13 +224,10 @@ p {
     border-collapse: collapse;
     border-spacing: 10px;
     width: 200px;
+    margin-left: 20px;
   }
   
-  .legend tr td, .legend tr th {
-    padding: 5px 10px;
-  }
-  
-  .legend th {
+  .legend tr th {
     border-bottom: 1px solid black;
   }
   

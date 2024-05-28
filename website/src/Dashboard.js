@@ -29,7 +29,6 @@ const mineralColors = {
   'Manganese': '#696969',
   'Lead': '#C0C0C0',
   'Titanium': '#DCDCDC',
-  'Concrete': '#778899',
   'Silicon': '#BEBEBE',
   'Silver': '#808080'
 };
@@ -203,7 +202,7 @@ function Dashboard() {
     svg.selectAll("*").remove(); // Clear previous chart
 
     const margin = { top: 40, right: 60, bottom: 40, left: 60 };
-    const width = 700 - margin.left - margin.right;
+    const width = 800 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
     const g = svg.append("g")
@@ -211,7 +210,7 @@ function Dashboard() {
 
     // Calculate needed minerals for 2021 and 2050
     const scenarioData = energyData.find(d => d.Scenario === selectedScenario);
-    const mineralNames = Object.keys(mineralColors);
+    const mineralNames = Object.keys(mineralColors).filter(name => name !== 'Concrete');
 
     const neededMinerals2021 = {};
     const neededMinerals2050 = {};
@@ -231,6 +230,7 @@ function Dashboard() {
           });
         }
       });
+
     });
 
     const reserves = {};
@@ -291,15 +291,15 @@ function Dashboard() {
       .call(d3.axisLeft(y).ticks(10, "~s"));
 
     // Add legend
-    const legend = svg.append("g")
-      .attr("transform", `translate(${width + 20}, 0)`);
+    const legend = g.append("g")
+      .attr("transform", `translate(0, ${height + 30})`);
 
     const legendKeys = ['2021', '2050', 'Reserve'];
     legend.selectAll("rect")
       .data(legendKeys)
       .enter().append("rect")
-      .attr("x", 0)
-      .attr("y", (d, i) => i * 20)
+      .attr("x", (d, i) => i * 100)
+      .attr("y", 0)
       .attr("width", 18)
       .attr("height", 18)
       .attr("fill", d => colors[d]);
@@ -307,8 +307,8 @@ function Dashboard() {
     legend.selectAll("text")
       .data(legendKeys)
       .enter().append("text")
-      .attr("x", 24)
-      .attr("y", (d, i) => i * 20 + 9)
+      .attr("x", (d, i) => i * 100 + 24)
+      .attr("y", 9)
       .attr("dy", ".35em")
       .text(d => d)
       .style("font-size", "12px")
@@ -350,7 +350,7 @@ function Dashboard() {
           </div>
         </div>
         <div className="minerals-bar-container">
-          <svg ref={mineralsBarRef} width={700} height={400}></svg>
+          <svg ref={mineralsBarRef} width={800} height={400}></svg>
         </div>
       </div>
     </div>
@@ -359,3 +359,4 @@ function Dashboard() {
 
 export default Dashboard;
 
+   
