@@ -203,7 +203,7 @@ function Dashboard() {
     svg.selectAll("*").remove(); // Clear previous chart
 
     const margin = { top: 40, right: 60, bottom: 40, left: 60 };
-    const width = 500 - margin.left - margin.right;
+    const width = 700 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
     const g = svg.append("g")
@@ -256,15 +256,15 @@ function Dashboard() {
       .rangeRound([0, x0.bandwidth()])
       .padding(0.05);
 
-    const y = d3.scaleLinear()
-      .domain([0, d3.max(mineralsChartData, d => d3.max(['2021', '2050', 'Reserve'], key => d[key]))])
+    const y = d3.scaleLog()
+      .domain([1, d3.max(mineralsChartData, d => d3.max(['2021', '2050', 'Reserve'], key => d[key]))])
       .rangeRound([height, 0])
       .nice();
 
     const colors = {
-      '2021': '#ff9999', // light red
-      '2050': '#99ccff', // light blue
-      'Reserve': '#99ff99' // light green
+      '2021': '#D1B2FF', // pastel purple
+      '2050': '#7EC8E3', // pastel blue
+      'Reserve': '#FFFACD' // pastel yellow
     };
 
     g.append("g")
@@ -288,10 +288,10 @@ function Dashboard() {
 
     g.append("g")
       .attr("class", "axis")
-      .call(d3.axisLeft(y));
+      .call(d3.axisLeft(y).ticks(10, "~s"));
 
     // Add legend
-    const legend = g.append("g")
+    const legend = svg.append("g")
       .attr("transform", `translate(${width + 20}, 0)`);
 
     const legendKeys = ['2021', '2050', 'Reserve'];
@@ -350,7 +350,7 @@ function Dashboard() {
           </div>
         </div>
         <div className="minerals-bar-container">
-          <svg ref={mineralsBarRef} width={500} height={400}></svg>
+          <svg ref={mineralsBarRef} width={700} height={400}></svg>
         </div>
       </div>
     </div>
@@ -358,3 +358,4 @@ function Dashboard() {
 }
 
 export default Dashboard;
+

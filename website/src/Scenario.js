@@ -12,8 +12,8 @@ function Scenario() {
         <Dashboard />
       </div>
       <div className="navigation-buttons">
-        <Link to="/minerals-extraction" className="arrow-left">&#8592;</Link>
-        <Link to="/energy-and-global-warming" className="arrow-right">&#8594;</Link>
+        <Link to="/minerals-extraction" className="arrow-lef4">&#8592;</Link>
+        <Link to="/energy-and-global-warming" className="arrow-right4">&#8594;</Link>
       </div>
     </div>
   );

@@ -1,14 +1,14 @@
 type,quantity
-Iron (for Steel),170000000000
+Steel,170000000000
 Copper,870000000
-Bauxite (for Aluminium),30000000000
+Aluminium,30000000000
 Zinc,250000000
 Rare Earths,120000000
 Nickel,94000000
-Manganese,1.5000000000
+Manganese,15000000000
 Lead,89000000
-Titanium (Ilmenite),870000000
-Silicon (Silica),1000000000000
+Titanium,870000000
+Silicon,1000000000000
 Silver,560000
 Indium,15000
 Tellurium,24000
