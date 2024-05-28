@@ -126,3 +126,43 @@ p {
     color: white;
     margin-top: 10px; /* Espacement par rapport au slider */
   }
+
+  .Dashboard {
+    font-family: Arial, sans-serif;
+  }
+  
+  .dashboard-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .scenario-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .scenario-buttons button {
+    margin: 0 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .charts-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+  }
+  
+  .left-chart, .center-chart, .right-chart {
+    display: inline-block;
+  }
+  
+  .bottom-chart {
+    text-align: center;
+  }
+  

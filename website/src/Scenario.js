@@ -1,5 +1,5 @@
 import React from 'react';
-import Globe from './Globe';
+import Dashboard from './Dashboard';
 import './styles.css';
 import { Link } from 'react-router-dom';
 
@@ -9,7 +9,7 @@ function Scenario() {
       <h2>Energy Transition Scenario</h2>
       <p>Lorem ipsum...</p>
       <div className="content">
-        <Globe />
+        <Dashboard />
       </div>
       <div className="navigation-buttons">
         <Link to="/minerals-extraction" className="arrow-left">&#8592;</Link>
