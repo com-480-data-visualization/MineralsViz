@@ -13,7 +13,7 @@ function Dashboard() {
   const [selectedScenario, setSelectedScenario] = useState('');
 
   useEffect(() => {
-    d3.csv('/data/rte_scenarios_energy_mix.csv').then(data => {
+    d3.csv('data/rte_scenarios_energy_mix.csv').then(data => {
       const scenarioList = data.map(d => d.Scenario);
       setScenarios(scenarioList);
       setSelectedScenario(scenarioList[0]); // Set default scenario
