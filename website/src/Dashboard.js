@@ -404,7 +404,7 @@ function Dashboard() {
       .rangeRound([0, x0.bandwidth()])
       .padding(0.05);
 
-    const y = d3.scaleLog()
+    const y = d3.scaleLinear()
       .domain([1, d3.max(pollutionChartData, d => d3.max(['2021', '2050'], key => d[key]))])
       .rangeRound([height, 0])
       .nice();
@@ -421,7 +421,7 @@ function Dashboard() {
       .attr("transform", d => `translate(${x0(d.pollution)},0)`);
 
     bars.selectAll("rect")
-      .data(d => ['2021', '2050', 'Reserve'].map(key => ({ key, value: d[key], pollution: d.pollution })))
+      .data(d => ['2021', '2050'].map(key => ({ key, value: d[key], pollution: d.pollution })))
       .enter().append("rect")
       .attr("x", d => x1(d.key))
       .attr("y", d => y(d.value))
@@ -442,7 +442,7 @@ function Dashboard() {
     const legend = g.append("g")
       .attr("transform", `translate(0, ${height + 40})`);
 
-    const legendKeys = ['2021', '2050', 'Reserve'];
+    const legendKeys = ['2021', '2050'];
     legend.selectAll("rect")
       .data(legendKeys)
       .enter().append("rect")
@@ -469,7 +469,7 @@ function Dashboard() {
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
       .style("font-weight", "bold")
-      .text(`Mineral Needs and Reserves for ${selectedScenario}`);
+      .text(`Pollution of ${selectedScenario}`);
   };
 
   return (
