@@ -360,7 +360,7 @@ function Dashboard() {
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     const scenarioData = energyData.find(d => d.Scenario === selectedScenario);
-    const pollutionTypes = ['Fabrication', 'Mineral Extraction', 'Usage', 'Waste', 'Total', 'Water Impact', 'Soil Impact', 'Toxic Waste', 'Air Pollutants'];
+    const pollutionTypes = ['Fabrication', 'Mineral Extraction', 'Usage', 'Waste', 'CO2 Total Emission', 'Water Impact', 'Soil Impact', 'Toxic Waste', 'Air Pollutants'];
 
     const Pollution2021 = {};
     const Pollution2050 = {};
@@ -404,7 +404,7 @@ function Dashboard() {
       .rangeRound([0, x0.bandwidth()])
       .padding(0.05);
 
-    const y = d3.scaleLinear()
+    const y = d3.scaleLog()
       .domain([1, d3.max(pollutionChartData, d => d3.max(['2021', '2050'], key => d[key]))])
       .rangeRound([height, 0])
       .nice();
