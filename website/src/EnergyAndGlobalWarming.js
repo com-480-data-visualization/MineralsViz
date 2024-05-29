@@ -7,7 +7,11 @@ function EnergyAndGlobalWarming() {
   return (
     <div className="page-container">
       <h2>Energy and Global Warming</h2>
-      <p>Lorem ipsum...</p>
+      <p>Global warming is a direct consequence of rising greenhouse gas emissions, 
+      mainly due to energy production and consumption. 
+      The intensive use of fossil fuels is a major contributor to these emissions, 
+      underlining the need for a transition to cleaner, more sustainable energy sources. 
+      The following graphs illustrate the evolution of energy consumption and its environmental impact.</p>
       <div className="content">
         <Glb />
       </div>

@@ -63,19 +63,19 @@ function Glb() {
   useEffect(() => {
     const drawGlobe = (countries, projection, path) => {
       const svg = d3.select(globeRef.current);
-      svg.selectAll(".country").remove(); // Clear existing paths
+      svg.selectAll(".country").remove(); 
       svg.selectAll("path")
         .data(countries.features)
         .enter().append("path")
         .attr("class", "country")
         .attr("d", path)
         .attr("fill", d => getColor(d.properties.name))
-        .attr("id", d => `country-${d.id}`) // Add a unique ID to each country
+        .attr("id", d => `country-${d.id}`) 
         .on("mousedown", function (event, d) {
           isDragging.current = true;
           setSelectedCountry(d.properties.name);
-          svg.selectAll(".country").attr("stroke", null); // Remove previous border
-          d3.select(this).attr("stroke", "black"); // Highlight selected country
+          svg.selectAll(".country").attr("stroke", null);
+          d3.select(this).attr("stroke", "black");
           globeRef.current.classList.add('shifted');
         });
 
@@ -192,7 +192,7 @@ function Glb() {
     console.log(`Data found for ${country}:`, countryData);
 
     const graphSvg = d3.select(graphRef.current);
-    graphSvg.selectAll("*").remove(); // Clear existing graph
+    graphSvg.selectAll("*").remove(); 
 
     const margin = { top: 60, right: 30, bottom: 70, left: 50 };
     const width = 500 - margin.left - margin.right;
@@ -250,7 +250,7 @@ function Glb() {
 
   const createLegend = () => {
     const legendSvg = d3.select(legendRef.current);
-    legendSvg.selectAll("*").remove(); // Clear existing legend
+    legendSvg.selectAll("*").remove();
 
     const legendWidth = 300;
     const legendHeight = 10;
@@ -300,12 +300,12 @@ function Glb() {
     }));
 
     const svg = d3.select(mineralsRef.current);
-    svg.selectAll("*").remove(); // Clear existing chart
+    svg.selectAll("*").remove(); 
 
     const width = 400;
     const height = 400;
     const radius = Math.min(width, height) / 2;
-    const arcMinAngle = 25; // Ensure minimum arc size
+    const arcMinAngle = 25;
 
     const color = d3.scaleOrdinal()
       .domain(data.map(d => d.mineral))
@@ -316,7 +316,7 @@ function Glb() {
       .outerRadius(radius - 1);
 
     const pie = d3.pie()
-      .value(d => Math.max(25, arcMinAngle)) // Ensure a minimum value to avoid zero arc size
+      .value(d => Math.max(25, arcMinAngle))
       .sort(null);
 
     const g = svg.append("g")

@@ -12,7 +12,7 @@ function Glb() {
   const [temperatureData, setTemperatureData] = useState(null);
   const [productionData, setProductionData] = useState(null);
   const [consumptionData, setConsumptionData] = useState(null);
-  const [selectedYear, setSelectedYear] = useState(1971); // Default year
+  const [selectedYear, setSelectedYear] = useState(1971); 
   const isDragging = useRef(false);
 
   useEffect(() => {
@@ -21,21 +21,19 @@ function Glb() {
     const width = 800;
     const height = 800;
 
-    // Projection du globe
+    
     const projection = d3.geoOrthographic()
       .scale(300)
       .translate([width / 2, height / 2]);
 
     const path = d3.geoPath().projection(projection);
 
-    // Add ocean background as a circle
     svg.append("circle")
       .attr("cx", width / 2)
       .attr("cy", height / 2)
       .attr("r", projection.scale())
-      .attr("fill", "#add8e6"); // Ocean color
+      .attr("fill", "#add8e6"); 
 
-    // Load temperature data
     d3.csv("data/temperature_data.csv")
       .then(temperatureData => {
         console.log("Loaded temperature data:", temperatureData);
@@ -45,7 +43,6 @@ function Glb() {
         console.error("Error loading temperature data:", error);
       });
 
-    // Load production data
     d3.csv("data/world_energy_production.csv")
       .then(productionData => {
         console.log("Loaded production data:", productionData);
@@ -55,7 +52,6 @@ function Glb() {
         console.error("Error loading production data:", error);
       });
 
-    // Load consumption data
     d3.csv("data/world_energy_conso.csv")
       .then(consumptionData => {
         console.log("Loaded consumption data:", consumptionData);
@@ -65,21 +61,20 @@ function Glb() {
         console.error("Error loading consumption data:", error);
       });
 
-    // Function to draw the globe and countries
     const drawGlobe = countries => {
-      svg.selectAll(".country").remove(); // Clear existing paths
+      svg.selectAll(".country").remove(); 
       svg.selectAll("path")
         .data(countries.features)
         .enter().append("path")
         .attr("class", "country")
         .attr("d", path)
-        .attr("fill", "white")  // Couleur initiale du pays
-        .attr("id", d => `country-${d.id}`) // Ajouter un ID unique à chaque pays
+        .attr("fill", "white")  
+        .attr("id", d => `country-${d.id}`) 
         .on("mousedown", function (event, d) {
           isDragging.current = true;
           setSelectedCountry(d);
-          svg.selectAll(".country").attr("stroke", null); // Remove previous border
-          d3.select(this).attr("stroke", "black"); // Highlight selected country
+          svg.selectAll(".country").attr("stroke", null); 
+          d3.select(this).attr("stroke", "black"); 
           globeRef.current.classList.add('shifted');
           if (temperatureData) {
             const yearData = temperatureData.find(data => data[selectedYear.toString()]);
@@ -116,17 +111,16 @@ function Glb() {
       });
     };
 
-    // Chargement des données du monde
     d3.json("https://unpkg.com/world-atlas@2.0.2/countries-110m.json").then(data => {
       const countries = topojson.feature(data, data.objects.countries);
       drawGlobe(countries);
     });
 
-  }, [selectedYear]); // Re-run the effect when the selected year changes
+  }, [selectedYear]); 
 
   const addTemperatureLabel = (countryName, temperature, position) => {
     const svg = d3.select(globeRef.current);
-    svg.selectAll(`.temp-label-${countryName}`).remove(); // Remove existing labels
+    svg.selectAll(`.temp-label-${countryName}`).remove(); 
 
     svg.append("text")
       .attr("class", `temp-label temp-label-${countryName}`)
@@ -147,11 +141,9 @@ function Glb() {
     const productionChart = d3.select(productionChartRef.current);
     const consumptionChart = d3.select(consumptionChartRef.current);
 
-    // Clear existing charts
     productionChart.selectAll("*").remove();
     consumptionChart.selectAll("*").remove();
 
-    // Production chart
     const prodMargin = { top: 60, right: 30, bottom: 70, left: 50 };
     const prodWidth = 500 - prodMargin.left - prodMargin.right;
     const prodHeight = 300 - prodMargin.top - prodMargin.bottom;
@@ -204,7 +196,6 @@ function Glb() {
       .attr("fill", "white")
       .text(`Energy Production in ${country}`);
 
-    // Consumption chart
     const consoMargin = { top: 60, right: 30, bottom: 70, left: 50 };
     const consoWidth = 500 - consoMargin.left - consoMargin.right;
     const consoHeight = 300 - consoMargin.top - consoMargin.bottom;
@@ -258,7 +249,6 @@ function Glb() {
       .text(`Energy Consumption in ${country}`);
   };
 
-  // Update country colors based on temperature data
   useEffect(() => {
     if (temperatureData) {
       console.log("Temperature data:", temperatureData);
@@ -286,9 +276,8 @@ function Glb() {
               return countryData ? temperatureScale(countryData[selectedYear]) : "white";
             });
 
-          // Add legend
           const legendSvg = d3.select(legendRef.current);
-          legendSvg.selectAll("*").remove(); // Clear existing legend
+          legendSvg.selectAll("*").remove(); 
           const legendWidth = 300;
           const legendHeight = 10;
 
@@ -332,7 +321,6 @@ function Glb() {
             .attr("transform", `translate(0,${legendHeight})`)
             .call(legendAxis);
         } else {
-          // No temperature data available for the selected year
           d3.selectAll(".country")
             .attr("fill", "white");
         }
@@ -355,7 +343,7 @@ function Glb() {
           min="1971" 
           max="2013" 
           value={selectedYear} 
-          onChange={e => setSelectedYear(+e.target.value)} // Convert value to number
+          onChange={e => setSelectedYear(+e.target.value)} 
         />
         <span>{selectedYear}</span>
       </div>

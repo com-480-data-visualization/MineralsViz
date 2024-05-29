@@ -9,7 +9,7 @@ function Glb() {
   const graphRef = useRef(null);
   const pollutionRef = useRef(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
-  const [selectedMineral, setSelectedMineral] = useState('Lithium'); // Default mineral
+  const [selectedMineral, setSelectedMineral] = useState('Lithium'); 
   const [mineralData, setMineralData] = useState(null);
   const [extractionData, setExtractionData] = useState(null);
   const [reserveData, setReserveData] = useState(null);
@@ -58,35 +58,32 @@ function Glb() {
     const width = 800;
     const height = 800;
 
-    // Projection du globe
     const projection = d3.geoOrthographic()
       .scale(300)
       .translate([width / 2, height / 2]);
 
     const path = d3.geoPath().projection(projection);
 
-    // Add ocean background as a circle
     svg.append("circle")
       .attr("cx", width / 2)
       .attr("cy", height / 2)
       .attr("r", projection.scale())
-      .attr("fill", "#add8e6"); // Ocean color
+      .attr("fill", "#add8e6"); 
 
-    // Function to draw the globe and countries
     const drawGlobe = countries => {
-      svg.selectAll(".country").remove(); // Clear existing paths
+      svg.selectAll(".country").remove(); 
       svg.selectAll("path")
         .data(countries.features)
         .enter().append("path")
         .attr("class", "country")
         .attr("d", path)
-        .attr("fill", d => getColor(d.properties.name))  // Color based on selected mineral
-        .attr("id", d => `country-${d.id}`) // Add a unique ID to each country
+        .attr("fill", d => getColor(d.properties.name)) 
+        .attr("id", d => `country-${d.id}`) 
         .on("mousedown", function (event, d) {
           isDragging.current = true;
           setSelectedCountry(d.properties.name);
-          svg.selectAll(".country").attr("stroke", null); // Remove previous border
-          d3.select(this).attr("stroke", "black"); // Highlight selected country
+          svg.selectAll(".country").attr("stroke", null); 
+          d3.select(this).attr("stroke", "black"); 
           globeRef.current.classList.add('shifted');
         });
 
@@ -113,25 +110,21 @@ function Glb() {
       });
     };
 
-    // Load world data
     d3.json("https://unpkg.com/world-atlas@2.0.2/countries-110m.json").then(data => {
       const countries = topojson.feature(data, data.objects.countries);
       drawGlobe(countries);
     });
 
-    // Load mineral data
     d3.csv("data/tot_mineral.csv").then(data => {
       console.log("Loaded mineral data:", data);
       setMineralData(data);
     });
 
-    // Load extraction data
     d3.csv("data/extraction_mineral_v2.csv").then(data => {
       console.log("Loaded extraction data:", data);
       setExtractionData(data);
     });
 
-    // Load reserve data
     d3.csv("data/reserve.csv").then(data => {
       console.log("Loaded reserve data:", data);
       setReserveData(data);
@@ -161,14 +154,14 @@ function Glb() {
     const value = +countryData.quantity;
     const maxValue = d3.max(mineralData.filter(d => d.type === selectedMineral), d => +d.quantity);
     const colorScale = d3.scaleLog()
-      .domain([1, maxValue]) // Using 1 to avoid log(0)
-      .range(["#ffffff", "#4d4d4d"]); // White to dark grey
+      .domain([1, maxValue]) 
+      .range(["#ffffff", "#4d4d4d"]); 
     return colorScale(value);
   };
 
   const createLegend = () => {
     const legendSvg = d3.select(legendRef.current);
-    legendSvg.selectAll("*").remove(); // Clear existing legend
+    legendSvg.selectAll("*").remove(); 
 
     const legendWidth = 300;
     const legendHeight = 10;
@@ -202,7 +195,7 @@ function Glb() {
       .range([0, legendWidth]);
 
     const legendAxis = d3.axisBottom(legendScale)
-      .ticks(5, ",.1s") // Format ticks for logarithmic scale
+      .ticks(5, ",.1s") 
       .tickFormat(d => `${d}`);
 
     legendSvg.append("g")
@@ -216,7 +209,7 @@ function Glb() {
     const countryReserveData = reserveData.find(d => d.country === country && d.type === selectedMineral);
 
     const graphSvg = d3.select(graphRef.current);
-    graphSvg.selectAll("*").remove(); // Clear existing graph
+    graphSvg.selectAll("*").remove(); 
 
     if (!countryExtractionData || !countryReserveData) {
       graphSvg.append("text")
@@ -229,7 +222,6 @@ function Glb() {
       return;
     }
 
-    // Filter out data before 2006
     const years = Object.keys(countryExtractionData).slice(2).map(year => +year).filter(year => year >= 2006);
     const extractionValues = years.map(year => +countryExtractionData[year] || 0);
     const reserveValues = years.map(year => +countryReserveData[year] || 0);
@@ -261,7 +253,6 @@ function Glb() {
     const g = graphSvg.append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // Add the extraction line
     g.append("path")
       .datum(extractionValues)
       .attr("fill", "none")
@@ -269,7 +260,6 @@ function Glb() {
       .attr("stroke-width", 1.5)
       .attr("d", lineExtraction);
 
-    // Add the reserve bars
     g.selectAll(".bar")
       .data(reserveValues)
       .enter().append("rect")
@@ -281,24 +271,20 @@ function Glb() {
       .attr("fill", "red")
       .attr("opacity", 0.5);
 
-    // Add the x-axis
     g.append("g")
       .attr("class", "x-axis")
       .attr("transform", `translate(0,${height})`)
       .call(d3.axisBottom(x).tickFormat(d3.format("d")));
 
-    // Add the left y-axis for extraction
     g.append("g")
       .attr("class", "y-axis")
       .call(d3.axisLeft(yExtraction));
 
-    // Add the right y-axis for reserves
     g.append("g")
       .attr("class", "y-axis y-axis--reserve")
       .attr("transform", `translate(${width},0)`)
       .call(d3.axisRight(yReserve));
 
-    // Add the graph title
     g.append("text")
       .attr("x", width / 2)
       .attr("y", -20)
@@ -317,11 +303,11 @@ function Glb() {
     }));
 
     const svg = d3.select(pollutionRef.current);
-    svg.selectAll("*").remove(); // Clear existing chart
+    svg.selectAll("*").remove(); 
 
     const width = 500;
     const height = 300;
-    const bubbleRadius = 110; // Increased bubble radius
+    const bubbleRadius = 100; 
 
     const color = d3.scaleOrdinal()
       .domain(data.map(d => d.pollution))
@@ -336,8 +322,8 @@ function Glb() {
       .attr("class", "bubble")
       .attr("transform", (d, i) => {
         const angle = (i / data.length) * 2 * Math.PI;
-        const x = Math.cos(angle) * 130; // Closer bubbles
-        const y = Math.sin(angle) * 130; // Closer bubbles
+        const x = Math.cos(angle) * 130; 
+        const y = Math.sin(angle) * 130; 
         return `translate(${x},${y})`;
       });
 
@@ -351,10 +337,10 @@ function Glb() {
       .attr("text-anchor", "middle")
       .attr("dy", ".35em")
       .attr("fill", "white")
-      .style("font-size", "14px") // Increased font size
+      .style("font-size", "14px") 
       .style("font-weight", "bold")
       .text(d => d.pollution)
-      .call(wrapText, bubbleRadius * 1.8); // Wrap text inside the bubble
+      .call(wrapText, bubbleRadius * 1.5); 
 
     bubble.on("mouseover", function(event, d) {
       d3.select(this).select("text").text(d.description).call(wrapText, bubbleRadius * 1.8);
@@ -362,7 +348,6 @@ function Glb() {
       d3.select(this).select("text").text(d.pollution).call(wrapText, bubbleRadius * 1.8);
     });
 
-    // Add the chart title
     svg.append("text")
       .attr("x", width / 2)
       .attr("y", 25)
@@ -373,7 +358,6 @@ function Glb() {
       .text(`Pollution Metrics for ${selectedMineral}`);
   };
 
-  // Function to wrap text inside a circle
   function wrapText(text, width) {
     text.each(function() {
       const text = d3.select(this);

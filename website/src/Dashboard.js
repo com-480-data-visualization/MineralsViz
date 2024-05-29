@@ -3,9 +3,9 @@ import * as d3 from 'd3';
 import './styles.css';
 
 const scenarioColors = {
-  'M0 - 100% Renewables': '#ff9999', // light red
-  'M1 - Distributed Renewables': '#99ccff', // light blue
-  'M23 - Centralized Renewables': '#99ff99' // light green
+  'M0 - 100% Renewables': '#ff9999', 
+  'M1 - Distributed Renewables': '#99ccff',
+  'M23 - Centralized Renewables': '#99ff99'
 };
 
 const energyColors = {
@@ -20,7 +20,7 @@ const energyColors = {
 };
 
 const mineralColors = {
-  'Steel': '#FFA07A', // pastel orange
+  'Steel': '#FFA07A', 
   'Copper': '#DEB887',
   'Aluminium': '#4682B4',
   'Zinc': '#708090',
@@ -60,7 +60,7 @@ function Dashboard() {
     ]).then(([scenarioData, mineralsData, reservesData, pollutionData]) => {
       const scenarioList = scenarioData.map(d => d.Scenario);
       setScenarios(scenarioList);
-      setSelectedScenario(scenarioList[0]); // Set default scenario
+      setSelectedScenario(scenarioList[0]); 
       setEnergyData(scenarioData);
       setMineralsData(mineralsData);
       setReservesData(reservesData);
@@ -81,7 +81,7 @@ function Dashboard() {
 
   const drawDonutChart = () => {
     const svg = d3.select(donutRef.current);
-    svg.selectAll("*").remove(); // Clear previous chart
+    svg.selectAll("*").remove();
 
     const width = 200;
     const height = 200;
@@ -106,7 +106,7 @@ function Dashboard() {
 
     const formattedData = energyTypes.map(type => ({
       energyType: type,
-      value: +data[type] || 0 // Convert to number, handle missing values
+      value: +data[type] || 0 
     }));
 
     const arcs = g.selectAll(".arc")
@@ -163,9 +163,8 @@ function Dashboard() {
       .style("fill", "black")
       .text(d => `${d.data.value}%`);
 
-    // Add the legend
     const legend = d3.select('.legend');
-    legend.selectAll("*").remove(); // Clear previous legend
+    legend.selectAll("*").remove();
 
     legend.append('tr')
       .html(`
@@ -206,7 +205,7 @@ function Dashboard() {
     if (!mineralsData.length || !reservesData.length || !energyData.length) return;
 
     const svg = d3.select(mineralsBarRef.current);
-    svg.selectAll("*").remove(); // Clear previous chart
+    svg.selectAll("*").remove(); 
 
     const margin = { top: 40, right: 60, bottom: 80, left: 60 };
     const width = 800 - margin.left - margin.right;
@@ -215,7 +214,6 @@ function Dashboard() {
     const g = svg.append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // Calculate needed minerals for 2021 and 2050
     const scenarioData = energyData.find(d => d.Scenario === selectedScenario);
     const mineralNames = Object.keys(mineralColors).filter(name => name !== 'Concrete');
 
@@ -224,8 +222,8 @@ function Dashboard() {
 
     energyTypes.forEach(type => {
       const percentage = +scenarioData[type] || 0;
-      const production2021 = (percentage * 27000) / 100; // in TWh
-      const production2050 = (percentage * 50000) / 100; // in TWh
+      const production2021 = (percentage * 27000) / 100; 
+      const production2050 = (percentage * 50000) / 100; 
 
       mineralsData.forEach(mineral => {
         if (mineral.type === type) {
@@ -244,7 +242,6 @@ function Dashboard() {
       reserves[reserve.type] = +reserve.quantity;
     });
 
-    // Prepare data for the bar chart
     const mineralsChartData = mineralNames.map(name => ({
       mineral: name,
       '2021': neededMinerals2021[name] || 0,
@@ -268,9 +265,9 @@ function Dashboard() {
       .nice();
 
     const colors = {
-      '2021': '#FFD700', // pastel orange
-      '2050': '#87CEFA', // pastel blue
-      'Reserve': '#FFFACD' // pastel yellow
+      '2021': '#FFD700', 
+      '2050': '#0066cc', 
+      'Reserve': '#FFFACD' 
     };
 
     const bars = g.append("g")
@@ -314,7 +311,6 @@ function Dashboard() {
       .attr("class", "axis")
       .call(d3.axisLeft(y).ticks(10, "~s"));
 
-    // Add legend
     const legend = g.append("g")
       .attr("transform", `translate(0, ${height + 40})`);
 
@@ -345,14 +341,14 @@ function Dashboard() {
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
       .style("font-weight", "bold")
-      .text(`Mineral Needs and Reserves for ${selectedScenario}`);
+      .text(`Mineral Needs and Reserves`);
   };
 
   const drawPollutionChart = () => {
     if (!pollutionData.length  || !energyData.length) return;
 
     const svg = d3.select(pollutionBarRef.current);
-    svg.selectAll("*").remove(); // Clear previous chart
+    svg.selectAll("*").remove(); 
 
     const margin = { top: 40, right: 60, bottom: 80, left: 60 };
     const width = 800 - margin.left - margin.right;
@@ -369,8 +365,8 @@ function Dashboard() {
 
     energyTypes.forEach(type => {
       const percentage = +scenarioData[type] || 0;
-      const production2021 = (percentage * 27000) / 100; // in TWh
-      const production2050 = (percentage * 50000) / 100; // in TWh
+      const production2021 = (percentage * 27000) / 100; 
+      const production2050 = (percentage * 50000) / 100; 
 
       pollutionData.forEach(pollution => {
         if (pollution.type === type) {
@@ -389,7 +385,6 @@ function Dashboard() {
       reserves[reserve.type] = +reserve.quantity;
     });
 
-    // Prepare data for the bar chart
     const pollutionChartData = pollutionTypes.map(name => ({
       pollution: name,
       '2021': Pollution2021[name] || 0,
@@ -412,8 +407,8 @@ function Dashboard() {
       .nice();
 
     const colors = {
-      '2021': '#FFD700', // pastel orange
-      '2050': '#87CEFA', // pastel blue
+      '2021': '#FFD700', 
+      '2050': '#0066cc', 
     };
 
     const bars = g.append("g")
@@ -440,7 +435,6 @@ function Dashboard() {
       .attr("class", "axis")
       .call(d3.axisLeft(y).ticks(10, "~s"));
 
-    // Add legend
     const legend = g.append("g")
       .attr("transform", `translate(0, ${height + 40})`);
 
@@ -471,14 +465,14 @@ function Dashboard() {
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
       .style("font-weight", "bold")
-      .text(`Pollution of ${selectedScenario}`);
+      .text(`Amount of Pollution Emitted`);
   };
 
   const drawHorizontalBarChart = () => {
     if (!pollutionData.length || !energyData.length) return;
 
     const svg = d3.select(horizontalBarRef.current);
-    svg.selectAll("*").remove(); // Clear previous chart
+    svg.selectAll("*").remove(); 
 
     const margin = { top: 40, right: 60, bottom: 80, left: 60 };
     const width = 800 - margin.left - margin.right;
@@ -496,8 +490,8 @@ function Dashboard() {
 
     energyTypes.forEach(type => {
       const percentage = +scenarioData[type] || 0;
-      const production2021 = (percentage * 27000) / 100; // in TWh
-      const production2050 = (percentage * 50000) / 100; // in TWh
+      const production2021 = (percentage * 27000) / 100; 
+      const production2050 = (percentage * 50000) / 100; 
 
       pollutionData.forEach(pollution => {
         if (pollution.type === type) {
@@ -512,10 +506,10 @@ function Dashboard() {
     const barData = [
       { name: 'CO2 Emission', year: '2021', value: Pollution2021['CO2 Total Emission'], color: '#FFD700' },
       { name: 'CO2 Emission', year: '2050', value: Pollution2050['CO2 Total Emission'], color: '#87CEFA' },
-      { name: 'CO2 Emission', year: 'Actual', value: actualCO2, color: '#FF4500' },
+      { name: 'CO2 Emission', year: 'Actual', value: actualCO2, color: '#cc6600' },
       { name: 'Water Impact', year: '2021', value: Pollution2021['Water Impact'], color: '#FFD700' },
       { name: 'Water Impact', year: '2050', value: Pollution2050['Water Impact'], color: '#87CEFA' },
-      { name: 'Water Impact', year: 'Actual', value: actualWater, color: '#FF4500' }
+      { name: 'Water Impact', year: 'Actual', value: actualWater, color: '#cc6600' }
     ];
 
     const x = d3.scaleLinear()
@@ -570,7 +564,6 @@ function Dashboard() {
       .attr("transform", `translate(0,${height})`)
       .call(d3.axisBottom(x).ticks(5, "s"));
 
-    // Add legend
     const legend = svg.append("g")
       .attr("transform", `translate(${margin.left},${height + margin.top + 10})`);
 
@@ -606,7 +599,7 @@ function Dashboard() {
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
       .style("font-weight", "bold")
-      .text(`CO2 and Water Impact Comparison for ${selectedScenario}`);
+      .text(`CO2 and Water Pollution Comparison Predictive vs Actual`);
   };
 
   return (
@@ -624,7 +617,7 @@ function Dashboard() {
       </div>
       <div className="dashboard-background" style={{ backgroundColor: scenarioColors[selectedScenario] }}>
         <div className="dashboard-header">
-          <h2 className="dashboard-title">Global Energy Scenarios Dashboard - {selectedScenario}</h2>
+          <h2 className="dashboard-title">Global Energy Dashboard: {selectedScenario}</h2>
         </div>
         <div className="charts-container">
           <div className="left-chart">
