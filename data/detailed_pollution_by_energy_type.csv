@@ -1,4 +1,4 @@
-Energy Type,Fabrication (tCO2e),Mineral Extraction (tCO2e),Usage (tCO2e),Waste (tCO2e),Total (tCO2e),Water Impact (m³),Soil Impact (tonnes),Toxic Waste (tonnes),Air Pollutants (tonnes)
+type,Fabrication,Mineral Extraction,Usage,Waste,Total,Water Impact,Soil Impact,Toxic Waste,Air Pollutants
 Onshore Wind,200000,30000,5000,1000,236000,500000,200,20,10
 Offshore Wind,300000,40000,10000,2000,352000,700000,300,30,20
 Photovoltaic,400000,50000,20000,5000,475000,1000000,500,50,25
