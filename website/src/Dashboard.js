@@ -226,7 +226,7 @@ function Dashboard() {
             if (!neededMinerals2021[name]) neededMinerals2021[name] = 0;
             if (!neededMinerals2050[name]) neededMinerals2050[name] = 0;
             neededMinerals2021[name] += +mineral[name] * production2021;
-            neededMinerals2050[name] += +mineral[name] * production2050;
+            neededMinerals2050[name] += +mineral[name] * production2050
           });
         }
       });
@@ -279,7 +279,14 @@ function Dashboard() {
       .attr("y", d => y(d.value))
       .attr("width", x1.bandwidth())
       .attr("height", d => height - y(d.value))
-      .attr("fill", d => colors[d.key]);
+      .attr("fill", d => colors[d.key])
+      .on("mouseover", function(event, d) {
+        const remainingYears = d.key === 'Reserve' ? reserves[d.mineral] / d.value : null;
+        const displayText = remainingYears ? `${Math.round(remainingYears)} years` : '';
+        d3.select(this)
+          .append("title")
+          .text(displayText);
+      });
 
     g.append("g")
       .attr("class", "axis")
@@ -358,4 +365,3 @@ function Dashboard() {
 }
 
 export default Dashboard;
-
