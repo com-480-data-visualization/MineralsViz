@@ -50,9 +50,9 @@ function Dashboard() {
 
   useEffect(() => {
     Promise.all([
-      d3.csv('/data/rte_scenarios_energy_mix.csv'),
-      d3.csv('/data/energy_minerals_by_TWh.csv'),
-      d3.csv('/data/mineral_reserves.csv')
+      d3.csv('data/rte_scenarios_energy_mix.csv'),
+      d3.csv('data/energy_minerals_by_TWh.csv'),
+      d3.csv('data/mineral_reserves.csv')
     ]).then(([scenarioData, mineralsData, reservesData]) => {
       const scenarioList = scenarioData.map(d => d.Scenario);
       setScenarios(scenarioList);
