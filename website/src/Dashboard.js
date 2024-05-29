@@ -49,6 +49,7 @@ function Dashboard() {
   const donutRef = useRef(null);
   const mineralsBarRef = useRef(null);
   const pollutionBarRef = useRef(null);
+  const horizontalBarRef = useRef(null);
 
   useEffect(() => {
     Promise.all([
@@ -74,6 +75,7 @@ function Dashboard() {
       drawDonutChart();
       drawMineralsBarChart();
       drawPollutionChart();
+      drawHorizontalBarChart();
     }
   }, [selectedScenario, energyData, mineralsData, reservesData, pollutionData]);
 
@@ -472,6 +474,106 @@ function Dashboard() {
       .text(`Pollution of ${selectedScenario}`);
   };
 
+  const drawHorizontalBarChart = () => {
+    if (!pollutionData.length || !energyData.length) return;
+
+    const svg = d3.select(horizontalBarRef.current);
+    svg.selectAll("*").remove(); // Clear previous chart
+
+    const margin = { top: 40, right: 60, bottom: 80, left: 60 };
+    const width = 800 - margin.left - margin.right;
+    const height = 200 - margin.top - margin.bottom;
+
+    const g = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const scenarioData = energyData.find(d => d.Scenario === selectedScenario);
+    const actualCO2 = 37.4;
+    const actualWater = 13.6;
+
+    const Pollution2021 = {};
+    const Pollution2050 = {};
+
+    energyTypes.forEach(type => {
+      const percentage = +scenarioData[type] || 0;
+      const production2021 = (percentage * 27000) / 100; // in TWh
+      const production2050 = (percentage * 50000) / 100; // in TWh
+
+      pollutionData.forEach(pollution => {
+        if (pollution.type === type) {
+          Pollution2021['CO2 Total Emission'] = (Pollution2021['CO2 Total Emission'] || 0) + (+pollution['CO2 Total Emission'] * production2021);
+          Pollution2050['CO2 Total Emission'] = (Pollution2050['CO2 Total Emission'] || 0) + (+pollution['CO2 Total Emission'] * production2050);
+          Pollution2021['Water Impact'] = (Pollution2021['Water Impact'] || 0) + (+pollution['Water Impact'] * production2021);
+          Pollution2050['Water Impact'] = (Pollution2050['Water Impact'] || 0) + (+pollution['Water Impact'] * production2050);
+        }
+      });
+    });
+
+    const barData = [
+      { name: 'CO2 Total Emission', year: '2021', value: Pollution2021['CO2 Total Emission'], color: '#FFD700' },
+      { name: 'CO2 Total Emission', year: '2050', value: Pollution2050['CO2 Total Emission'], color: '#87CEFA' },
+      { name: 'CO2 Total Emission', year: 'Actual', value: actualCO2, color: '#FF4500' },
+      { name: 'Water Impact', year: '2021', value: Pollution2021['Water Impact'], color: '#FFD700' },
+      { name: 'Water Impact', year: '2050', value: Pollution2050['Water Impact'], color: '#87CEFA' },
+      { name: 'Water Impact', year: 'Actual', value: actualWater, color: '#FF4500' }
+    ];
+
+    const x = d3.scaleLinear()
+      .domain([0, d3.max(barData, d => d.value)])
+      .range([0, width]);
+
+    const y = d3.scaleBand()
+      .domain(barData.map(d => d.name + '-' + d.year))
+      .range([0, height])
+      .padding(0.1);
+
+    g.selectAll(".bar")
+      .data(barData)
+      .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", 0)
+      .attr("y", d => y(d.name + '-' + d.year))
+      .attr("width", d => x(d.value))
+      .attr("height", y.bandwidth())
+      .attr("fill", d => d.color);
+
+    g.selectAll(".label")
+      .data(barData)
+      .enter().append("text")
+      .attr("class", "label")
+      .attr("x", d => x(d.value) + 5)
+      .attr("y", d => y(d.name + '-' + d.year) + y.bandwidth() / 2)
+      .attr("dy", ".35em")
+      .text(d => {
+        if (d.year !== 'Actual') {
+          const actualValue = d.name === 'CO2 Total Emission' ? actualCO2 : actualWater;
+          const diffPercentage = ((d.value - actualValue) / actualValue * 100).toFixed(2);
+          return `${d.value.toFixed(2)} (${diffPercentage}%)`;
+        }
+        return d.value.toFixed(2);
+      })
+      .style("font-size", "12px")
+      .style("font-weight", "bold")
+      .style("fill", "black");
+
+    g.append("g")
+      .attr("class", "axis")
+      .call(d3.axisLeft(y));
+
+    g.append("g")
+      .attr("class", "axis")
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(x).ticks(5, "s"));
+
+    g.append("text")
+      .attr("x", width / 2)
+      .attr("y", -10)
+      .attr("text-anchor", "middle")
+      .style("font-size", "16px")
+      .style("font-weight", "bold")
+      .text(`CO2 and Water Impact Comparison for ${selectedScenario}`);
+  };
+
   return (
     <div className="Dashboard">
       <div className="scenario-buttons">
@@ -502,6 +604,9 @@ function Dashboard() {
         </div>
         <div className="pollution-bar-container">
           <svg ref={pollutionBarRef} width={800} height={400}></svg>
+        </div>
+        <div className="horizontal-bar-container">
+          <svg ref={horizontalBarRef} width={800} height={200}></svg>
         </div>
       </div>
     </div>
