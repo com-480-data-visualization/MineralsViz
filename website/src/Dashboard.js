@@ -50,9 +50,9 @@ function Dashboard() {
 
   useEffect(() => {
     Promise.all([
-      d3.csv('data/rte_scenarios_energy_mix.csv'),
-      d3.csv('data/energy_minerals_by_TWh.csv'),
-      d3.csv('data/mineral_reserves.csv')
+      d3.csv('/data/rte_scenarios_energy_mix.csv'),
+      d3.csv('/data/energy_minerals_by_TWh.csv'),
+      d3.csv('/data/mineral_reserves.csv')
     ]).then(([scenarioData, mineralsData, reservesData]) => {
       const scenarioList = scenarioData.map(d => d.Scenario);
       setScenarios(scenarioList);
@@ -279,37 +279,7 @@ function Dashboard() {
       .attr("y", d => y(d.value))
       .attr("width", x1.bandwidth())
       .attr("height", d => height - y(d.value))
-      .attr("fill", d => colors[d.key])
-      .on("mouseover", function(event, d) {
-        if (d.key !== 'Reserve') {
-          d3.select(this)
-            .transition()
-            .duration(200)
-            .attr("y", y(d.value) - 10)
-            .attr("height", height - y(d.value) + 10);
-
-          g.selectAll(".reserve-text").remove();
-          
-          g.append("text")
-            .attr("class", "reserve-text")
-            .attr("x", x0(d.mineral) + x1(d.key) + x1.bandwidth() / 2)
-            .attr("y", y(d.value) - 15)
-            .attr("text-anchor", "middle")
-            .style("font-size", "14px")
-            .style("font-weight", "bold")
-            .style("fill", "black")
-            .text(`${Math.round(reserves[d.mineral] / d.value)} years`);
-        }
-      })
-      .on("mouseout", function() {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .attr("y", y(d => d.value))
-          .attr("height", d => height - y(d.value));
-
-        g.selectAll(".reserve-text").remove();
-      });
+      .attr("fill", d => colors[d.key]);
 
     g.append("g")
       .attr("class", "axis")
