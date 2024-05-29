@@ -501,7 +501,7 @@ function Dashboard() {
           <svg ref={mineralsBarRef} width={800} height={400}></svg>
         </div>
         <div className="pollution-bar-container">
-          <svg ref={mineralsBarRef} width={800} height={400}></svg>
+          <svg ref={pollutionBarRef} width={800} height={400}></svg>
         </div>
       </div>
     </div>
