@@ -523,7 +523,7 @@ function Dashboard() {
       .range([0, width]);
 
     const y = d3.scaleBand()
-      .domain(barData.map(d => d.year))
+      .domain(barData.map(d => d.name + '-' + d.year))
       .range([0, height])
       .padding(0.1);
 
@@ -532,7 +532,7 @@ function Dashboard() {
       .enter().append("rect")
       .attr("class", "bar")
       .attr("x", 0)
-      .attr("y", d => y(d.year))
+      .attr("y", d => y(d.name + '-' + d.year))
       .attr("width", d => x(d.value))
       .attr("height", y.bandwidth())
       .attr("fill", d => d.color);
@@ -542,7 +542,7 @@ function Dashboard() {
       .enter().append("text")
       .attr("class", "label")
       .attr("x", d => x(d.value) + 5)
-      .attr("y", d => y(d.year) + y.bandwidth() / 2)
+      .attr("y", d => y(d.name + '-' + d.year) + y.bandwidth() / 2)
       .attr("dy", ".35em")
       .text(d => {
         if (d.year !== 'Actual') {
