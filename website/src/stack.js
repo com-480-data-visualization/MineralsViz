@@ -44,26 +44,22 @@ function Dashboard() {
   const [energyData, setEnergyData] = useState([]);
   const [mineralsData, setMineralsData] = useState([]);
   const [reservesData, setReservesData] = useState([]);
-  const [pollutionData, setPollutionData] = useState([]);
 
   const donutRef = useRef(null);
   const mineralsBarRef = useRef(null);
-  const pollutionBarRef = useRef(null);
 
   useEffect(() => {
     Promise.all([
       d3.csv('data/rte_scenarios_energy_mix.csv'),
       d3.csv('data/energy_minerals_by_TWh.csv'),
-      d3.csv('data/mineral_reserves.csv'),
-      d3.csv('data/detailed_pollution_by_energy_type.csv')
-    ]).then(([scenarioData, mineralsData, reservesData, pollutionData]) => {
+      d3.csv('data/mineral_reserves.csv')
+    ]).then(([scenarioData, mineralsData, reservesData]) => {
       const scenarioList = scenarioData.map(d => d.Scenario);
       setScenarios(scenarioList);
       setSelectedScenario(scenarioList[0]); // Set default scenario
       setEnergyData(scenarioData);
       setMineralsData(mineralsData);
       setReservesData(reservesData);
-      setPollutionData(pollutionData);
     }).catch(error => {
       console.error("Error loading data:", error);
     });
@@ -73,9 +69,8 @@ function Dashboard() {
     if (selectedScenario && energyData.length > 0) {
       drawDonutChart();
       drawMineralsBarChart();
-      drawPollutionChart();
     }
-  }, [selectedScenario, energyData, mineralsData, reservesData, pollutionData]);
+  }, [selectedScenario, energyData, mineralsData, reservesData]);
 
   const drawDonutChart = () => {
     const svg = d3.select(donutRef.current);
@@ -346,132 +341,6 @@ function Dashboard() {
       .text(`Mineral Needs and Reserves for ${selectedScenario}`);
   };
 
-  const drawPollutionChart = () => {
-    if (!pollutionData.length  || !energyData.length) return;
-
-    const svg = d3.select(pollutionBarRef.current);
-    svg.selectAll("*").remove(); // Clear previous chart
-
-    const margin = { top: 40, right: 60, bottom: 80, left: 60 };
-    const width = 800 - margin.left - margin.right;
-    const height = 400 - margin.top - margin.bottom;
-
-    const g = svg.append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
-
-    const scenarioData = energyData.find(d => d.Scenario === selectedScenario);
-    const pollutionTypes = ['Fabrication', 'Mineral Extraction', 'Usage', 'Waste', 'Total', 'Water Impact', 'Soil Impact', 'Toxic Waste', 'Air Pollutants'];
-
-    const Pollution2021 = {};
-    const Pollution2050 = {};
-
-    energyTypes.forEach(type => {
-      const percentage = +scenarioData[type] || 0;
-      const production2021 = (percentage * 27000) / 100; // in TWh
-      const production2050 = (percentage * 50000) / 100; // in TWh
-
-      pollutionData.forEach(pollution => {
-        if (pollution.type === type) {
-          pollutionTypes.forEach(name => {
-            if (!Pollution2021[name]) Pollution2021[name] = 0;
-            if (!Pollution2050[name]) Pollution2050[name] = 0;
-            Pollution2021[name] += +pollution[name] * production2021;
-            Pollution2050[name] += +pollution[name] * production2050;
-          });
-        }
-      });
-    });
-
-    const reserves = {};
-    reservesData.forEach(reserve => {
-      reserves[reserve.type] = +reserve.quantity;
-    });
-
-    // Prepare data for the bar chart
-    const pollutionChartData = pollutionTypes.map(name => ({
-      pollution: name,
-      '2021': Pollution2021[name] || 0,
-      '2050': Pollution2050[name] || 0,
-    }));
-
-    const x0 = d3.scaleBand()
-      .domain(pollutionChartData.map(d => d.pollution))
-      .rangeRound([0, width])
-      .paddingInner(0.1);
-
-    const x1 = d3.scaleBand()
-      .domain(['2021', '2050', 'Reserve'])
-      .rangeRound([0, x0.bandwidth()])
-      .padding(0.05);
-
-    const y = d3.scaleLog()
-      .domain([1, d3.max(pollutionChartData, d => d3.max(['2021', '2050'], key => d[key]))])
-      .rangeRound([height, 0])
-      .nice();
-
-    const colors = {
-      '2021': '#FFD700', // pastel orange
-      '2050': '#87CEFA', // pastel blue
-    };
-
-    const bars = g.append("g")
-      .selectAll("g")
-      .data(pollutionChartData)
-      .enter().append("g")
-      .attr("transform", d => `translate(${x0(d.pollution)},0)`);
-
-    bars.selectAll("rect")
-      .data(d => ['2021', '2050', 'Reserve'].map(key => ({ key, value: d[key], pollution: d.pollution })))
-      .enter().append("rect")
-      .attr("x", d => x1(d.key))
-      .attr("y", d => y(d.value))
-      .attr("width", x1.bandwidth())
-      .attr("height", d => height - y(d.value))
-      .attr("fill", d => colors[d.key])
-
-    g.append("g")
-      .attr("class", "axis")
-      .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(x0));
-
-    g.append("g")
-      .attr("class", "axis")
-      .call(d3.axisLeft(y).ticks(10, "~s"));
-
-    // Add legend
-    const legend = g.append("g")
-      .attr("transform", `translate(0, ${height + 40})`);
-
-    const legendKeys = ['2021', '2050', 'Reserve'];
-    legend.selectAll("rect")
-      .data(legendKeys)
-      .enter().append("rect")
-      .attr("x", (d, i) => i * 100)
-      .attr("y", 0)
-      .attr("width", 18)
-      .attr("height", 18)
-      .attr("fill", d => colors[d]);
-
-    legend.selectAll("text")
-      .data(legendKeys)
-      .enter().append("text")
-      .attr("x", (d, i) => i * 100 + 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .text(d => d)
-      .style("font-size", "12px")
-      .style("font-weight", "bold")
-      .style("color", "black");
-
-    g.append("text")
-      .attr("x", width / 2)
-      .attr("y", -10)
-      .attr("text-anchor", "middle")
-      .style("font-size", "16px")
-      .style("font-weight", "bold")
-      .text(`Mineral Needs and Reserves for ${selectedScenario}`);
-  };
-
   return (
     <div className="Dashboard">
       <div className="scenario-buttons">
@@ -498,9 +367,6 @@ function Dashboard() {
           </div>
         </div>
         <div className="minerals-bar-container">
-          <svg ref={mineralsBarRef} width={800} height={400}></svg>
-        </div>
-        <div className="pollution-bar-container">
           <svg ref={mineralsBarRef} width={800} height={400}></svg>
         </div>
       </div>

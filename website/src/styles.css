@@ -259,4 +259,9 @@ p {
     justify-content: center;
   }
 
+  .pollution-bar-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
   
