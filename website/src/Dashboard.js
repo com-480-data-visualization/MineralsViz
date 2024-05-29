@@ -532,7 +532,7 @@ function Dashboard() {
       .enter().append("rect")
       .attr("class", "bar")
       .attr("x", 0)
-      .attr("y", d => y(d.name + '-' + d.year))
+      .attr("y", d => y(d.year))
       .attr("width", d => x(d.value))
       .attr("height", y.bandwidth())
       .attr("fill", d => d.color);
