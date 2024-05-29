@@ -91,7 +91,7 @@ p {
     transition: background-color 0.9s;
     position: absolute; 
     bottom: 20px; 
-    left: 20%; 
+    left: 10%; 
     transform: translateX(-50%);
 }
 .arrow-right4 {
@@ -107,7 +107,7 @@ p {
     transition: background-color 0.9s;
     position: absolute; 
     bottom: 20px; 
-    left: 80%; 
+    left: 90%; 
     transform: translateX(-50%);
 }
 
