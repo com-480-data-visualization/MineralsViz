@@ -488,8 +488,8 @@ function Dashboard() {
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     const scenarioData = energyData.find(d => d.Scenario === selectedScenario);
-    const actualCO2 = 37.4;
-    const actualWater = 13.6;
+    const actualCO2 = 37400000000;
+    const actualWater = 13600000000;
 
     const Pollution2021 = {};
     const Pollution2050 = {};
@@ -542,13 +542,13 @@ function Dashboard() {
       .enter().append("text")
       .attr("class", "label")
       .attr("x", d => x(d.value) + 5)
-      .attr("y", d => y(d.name + '-' + d.year) + y.bandwidth() / 2)
+      .attr("y", d => y(d.year) + y.bandwidth() / 2)
       .attr("dy", ".35em")
       .text(d => {
         if (d.year !== 'Actual') {
           const actualValue = d.name === 'CO2 Total Emission' ? actualCO2 : actualWater;
           const diffPercentage = ((d.value - actualValue) / actualValue * 100).toFixed(2);
-          return `${d.value.toFixed(2)} (${diffPercentage}%)`;
+          return `(${Math.round(diffPercentage)}%)`;
         }
         return d.value.toFixed(2);
       })
