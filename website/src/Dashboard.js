@@ -44,22 +44,26 @@ function Dashboard() {
   const [energyData, setEnergyData] = useState([]);
   const [mineralsData, setMineralsData] = useState([]);
   const [reservesData, setReservesData] = useState([]);
+  const [pollutionData, setPollutionData] = useState([]);
 
   const donutRef = useRef(null);
   const mineralsBarRef = useRef(null);
+  const pollutionBarRef = useRef(null);
 
   useEffect(() => {
     Promise.all([
       d3.csv('data/rte_scenarios_energy_mix.csv'),
       d3.csv('data/energy_minerals_by_TWh.csv'),
-      d3.csv('data/mineral_reserves.csv')
-    ]).then(([scenarioData, mineralsData, reservesData]) => {
+      d3.csv('data/mineral_reserves.csv'),
+      d3.csv('data/detailed_pollution_by_energy_type.csv')
+    ]).then(([scenarioData, mineralsData, reservesData, pollutionData]) => {
       const scenarioList = scenarioData.map(d => d.Scenario);
       setScenarios(scenarioList);
       setSelectedScenario(scenarioList[0]); // Set default scenario
       setEnergyData(scenarioData);
       setMineralsData(mineralsData);
       setReservesData(reservesData);
+      setPollutionData(pollutionData);
     }).catch(error => {
       console.error("Error loading data:", error);
     });
@@ -69,8 +73,9 @@ function Dashboard() {
     if (selectedScenario && energyData.length > 0) {
       drawDonutChart();
       drawMineralsBarChart();
+      drawPollutionBarChart();
     }
-  }, [selectedScenario, energyData, mineralsData, reservesData]);
+  }, [selectedScenario, energyData, mineralsData, reservesData, pollutionData]);
 
   const drawDonutChart = () => {
     const svg = d3.select(donutRef.current);
@@ -223,10 +228,8 @@ function Dashboard() {
       mineralsData.forEach(mineral => {
         if (mineral.type === type) {
           mineralNames.forEach(name => {
-            if (!neededMinerals2021[name]) neededMinerals2021[name] = 0;
-            if (!neededMinerals2050[name]) neededMinerals2050[name] = 0;
-            neededMinerals2021[name] += +mineral[name] * production2021;
-            neededMinerals2050[name] += +mineral[name] * production2050;
+            neededMinerals2021[name] = (neededMinerals2021[name] || 0) + (+mineral[name] * production2021);
+            neededMinerals2050[name] = (neededMinerals2050[name] || 0) + (+mineral[name] * production2050);
           });
         }
       });
@@ -341,8 +344,119 @@ function Dashboard() {
       .text(`Mineral Needs and Reserves for ${selectedScenario}`);
   };
 
+  const drawPollutionBarChart = () => {
+    if (!pollutionData.length || !energyData.length) return;
+
+    const svg = d3.select(pollutionBarRef.current);
+    svg.selectAll("*").remove(); // Clear previous chart
+
+    const margin = { top: 40, right: 60, bottom: 80, left: 60 };
+    const width = 800 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    const g = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const pollutionTypes = ['Fabrication', 'Mineral Extraction', 'Usage', 'Waste', 'Total', 'Water Impact', 'Soil Impact', 'Toxic Waste', 'Air Pollutants'];
+    
+    const scenarioData = energyData.find(d => d.Scenario === selectedScenario);
+    const pollutionValues2021 = {};
+    const pollutionValues2050 = {};
+
+    pollutionData.forEach(pollution => {
+      pollutionTypes.forEach(type => {
+        pollutionValues2021[type] = (pollutionValues2021[type] || 0) + ((+pollution[type] || 0) * (27000 / 100) * (+scenarioData[pollution.energyType] || 0));
+        pollutionValues2050[type] = (pollutionValues2050[type] || 0) + ((+pollution[type] || 0) * (50000 / 100) * (+scenarioData[pollution.energyType] || 0));
+      });
+    });
+
+    const pollutionChartData = pollutionTypes.map(type => ({
+      pollutionType: type,
+      '2021': pollutionValues2021[type] || 0,
+      '2050': pollutionValues2050[type] || 0
+    }));
+
+    const x0 = d3.scaleBand()
+      .domain(pollutionChartData.map(d => d.pollutionType))
+      .rangeRound([0, width])
+      .paddingInner(0.1);
+
+    const x1 = d3.scaleBand()
+      .domain(['2021', '2050'])
+      .rangeRound([0, x0.bandwidth()])
+      .padding(0.05);
+
+    const y = d3.scaleLog()
+      .domain([1, d3.max(pollutionChartData, d => d3.max(['2021', '2050'], key => d[key]))])
+      .rangeRound([height, 0])
+      .nice();
+
+    const colors = {
+      '2021': '#FFD700', // pastel orange
+      '2050': '#87CEFA' // pastel blue
+    };
+
+    const bars = g.append("g")
+      .selectAll("g")
+      .data(pollutionChartData)
+      .enter().append("g")
+      .attr("transform", d => `translate(${x0(d.pollutionType)},0)`);
+
+    bars.selectAll("rect")
+      .data(d => ['2021', '2050'].map(key => ({ key, value: d[key], pollutionType: d.pollutionType })))
+      .enter().append("rect")
+      .attr("x", d => x1(d.key))
+      .attr("y", d => y(d.value))
+      .attr("width", x1.bandwidth())
+      .attr("height", d => height - y(d.value))
+      .attr("fill", d => colors[d.key]);
+
+    g.append("g")
+      .attr("class", "axis")
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(x0));
+
+    g.append("g")
+      .attr("class", "axis")
+      .call(d3.axisLeft(y).ticks(10, "~s"));
+
+    // Add legend
+    const legend = g.append("g")
+      .attr("transform", `translate(0, ${height + 40})`);
+
+    const legendKeys = ['2021', '2050'];
+    legend.selectAll("rect")
+      .data(legendKeys)
+      .enter().append("rect")
+      .attr("x", (d, i) => i * 100)
+      .attr("y", 0)
+      .attr("width", 18)
+      .attr("height", 18)
+      .attr("fill", d => colors[d]);
+
+    legend.selectAll("text")
+      .data(legendKeys)
+      .enter().append("text")
+      .attr("x", (d, i) => i * 100 + 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .text(d => d)
+      .style("font-size", "12px")
+      .style("font-weight", "bold")
+      .style("color", "black");
+
+    g.append("text")
+      .attr("x", width / 2)
+      .attr("y", -10)
+      .attr("text-anchor", "middle")
+      .style("font-size", "16px")
+      .style("font-weight", "bold")
+      .text(`Pollution by Type for ${selectedScenario}`);
+  };
+
   return (
     <div className="Dashboard">
+      <h1 className="dashboard-title">Global Energy Scenarios Dashboard</h1>
       <div className="scenario-buttons">
         {scenarios.map(scenario => (
           <button
@@ -354,20 +468,21 @@ function Dashboard() {
           </button>
         ))}
       </div>
-      <div className="dashboard-background" style={{ backgroundColor: scenarioColors[selectedScenario] }}>
+      <div className="dashboard-container">
         <div className="dashboard-header">
-          <h2 className="dashboard-title">Global Energy Scenarios Dashboard - {selectedScenario}</h2>
+          <h2 className="dashboard-header-title">Energy Mix for {selectedScenario}</h2>
         </div>
         <div className="charts-container">
           <div className="left-chart">
             <svg ref={donutRef} width={200} height={200}></svg>
-          </div>
-          <div className="legend-container">
             <table className="legend"></table>
           </div>
-        </div>
-        <div className="minerals-bar-container">
-          <svg ref={mineralsBarRef} width={800} height={400}></svg>
+          <div className="center-chart">
+            <svg ref={mineralsBarRef} width={800} height={400}></svg>
+          </div>
+          <div className="right-chart">
+            <svg ref={pollutionBarRef} width={800} height={400}></svg>
+          </div>
         </div>
       </div>
     </div>
