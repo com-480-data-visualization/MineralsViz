@@ -510,9 +510,9 @@ function Dashboard() {
     });
 
     const barData = [
-      { name: 'CO2 Total Emission', year: '2021', value: Pollution2021['CO2 Total Emission'], color: '#FFD700' },
-      { name: 'CO2 Total Emission', year: '2050', value: Pollution2050['CO2 Total Emission'], color: '#87CEFA' },
-      { name: 'CO2 Total Emission', year: 'Actual', value: actualCO2, color: '#FF4500' },
+      { name: 'CO2 Emission', year: '2021', value: Pollution2021['CO2 Total Emission'], color: '#FFD700' },
+      { name: 'CO2 Emission', year: '2050', value: Pollution2050['CO2 Total Emission'], color: '#87CEFA' },
+      { name: 'CO2 Emission', year: 'Actual', value: actualCO2, color: '#FF4500' },
       { name: 'Water Impact', year: '2021', value: Pollution2021['Water Impact'], color: '#FFD700' },
       { name: 'Water Impact', year: '2050', value: Pollution2050['Water Impact'], color: '#87CEFA' },
       { name: 'Water Impact', year: 'Actual', value: actualWater, color: '#FF4500' }
@@ -523,18 +523,23 @@ function Dashboard() {
       .range([0, width]);
 
     const y = d3.scaleBand()
-      .domain(barData.map(d => d.name + '-' + d.year))
+      .domain(['CO2 Emission', 'Water Impact'])
       .range([0, height])
       .padding(0.1);
+
+    const y1 = d3.scaleBand()
+      .domain(['2021', '2050', 'Actual'])
+      .range([0, y.bandwidth()])
+      .padding(0.05);
 
     g.selectAll(".bar")
       .data(barData)
       .enter().append("rect")
       .attr("class", "bar")
       .attr("x", 0)
-      .attr("y", d => y(d.name + '-' + d.year))
+      .attr("y", d => y(d.name) + y1(d.year))
       .attr("width", d => x(d.value))
-      .attr("height", y.bandwidth())
+      .attr("height", y1.bandwidth())
       .attr("fill", d => d.color);
 
     g.selectAll(".label")
@@ -542,11 +547,11 @@ function Dashboard() {
       .enter().append("text")
       .attr("class", "label")
       .attr("x", d => x(d.value) + 5)
-      .attr("y", d => y(d.name + '-' + d.year) + y.bandwidth() / 2)
+      .attr("y", d => y(d.name) + y1(d.year) + y1.bandwidth() / 2)
       .attr("dy", ".35em")
       .text(d => {
         if (d.year !== 'Actual') {
-          const actualValue = d.name === 'CO2 Total Emission' ? actualCO2 : actualWater;
+          const actualValue = d.name === 'CO2 Emission' ? actualCO2 : actualWater;
           const diffPercentage = ((d.value - actualValue) / actualValue * 100).toFixed(2);
           return `(${Math.round(diffPercentage)}%)`;
         }
@@ -564,6 +569,36 @@ function Dashboard() {
       .attr("class", "axis")
       .attr("transform", `translate(0,${height})`)
       .call(d3.axisBottom(x).ticks(5, "s"));
+
+    // Add legend
+    const legend = svg.append("g")
+      .attr("transform", `translate(${margin.left},${height + margin.top + 10})`);
+
+    const legendData = [
+      { year: '2021', color: '#FFD700' },
+      { year: '2050', color: '#87CEFA' },
+      { year: 'Actual', color: '#FF4500' }
+    ];
+
+    legend.selectAll("rect")
+      .data(legendData)
+      .enter().append("rect")
+      .attr("x", (d, i) => i * 100)
+      .attr("y", 0)
+      .attr("width", 18)
+      .attr("height", 18)
+      .attr("fill", d => d.color);
+
+    legend.selectAll("text")
+      .data(legendData)
+      .enter().append("text")
+      .attr("x", (d, i) => i * 100 + 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .text(d => d.year)
+      .style("font-size", "12px")
+      .style("font-weight", "bold")
+      .style("color", "black");
 
     g.append("text")
       .attr("x", width / 2)
@@ -614,4 +649,3 @@ function Dashboard() {
 }
 
 export default Dashboard;
-
