@@ -20,7 +20,7 @@ const energyColors = {
 };
 
 const mineralColors = {
-  'Steel': '#B0C4DE',
+  'Steel': '#FFA07A', // pastel orange
   'Copper': '#DEB887',
   'Aluminium': '#4682B4',
   'Zinc': '#708090',
@@ -226,7 +226,7 @@ function Dashboard() {
             if (!neededMinerals2021[name]) neededMinerals2021[name] = 0;
             if (!neededMinerals2050[name]) neededMinerals2050[name] = 0;
             neededMinerals2021[name] += +mineral[name] * production2021;
-            neededMinerals2050[name] += +mineral[name] * production2050
+            neededMinerals2050[name] += +mineral[name] * production2050;
           });
         }
       });
@@ -261,8 +261,8 @@ function Dashboard() {
       .nice();
 
     const colors = {
-      '2021': '#D1B2FF', // pastel purple
-      '2050': '#7EC8E3', // pastel blue
+      '2021': '#FFD700', // pastel orange
+      '2050': '#87CEFA', // pastel blue
       'Reserve': '#FFFACD' // pastel yellow
     };
 
@@ -281,11 +281,21 @@ function Dashboard() {
       .attr("height", d => height - y(d.value))
       .attr("fill", d => colors[d.key])
       .on("mouseover", function(event, d) {
-        const remainingYears = d.key === 'Reserve' ? reserves[d.mineral] / d.value : null;
-        const displayText = remainingYears ? `${Math.round(remainingYears)} years` : '';
-        d3.select(this)
-          .append("title")
+        const yearsRemaining = d.key !== 'Reserve' ? reserves[d.mineral] / d.value : null;
+        const displayText = yearsRemaining ? `${Math.round(yearsRemaining)} years` : '';
+        
+        g.append("text")
+          .attr("class", "hover-text")
+          .attr("x", x0(d.mineral) + x1(d.key) + x1.bandwidth() / 2)
+          .attr("y", y(d.value) - 10)
+          .attr("text-anchor", "middle")
+          .style("font-size", "12px")
+          .style("font-weight", "bold")
+          .style("fill", "black")
           .text(displayText);
+      })
+      .on("mouseout", function() {
+        g.selectAll(".hover-text").remove();
       });
 
     g.append("g")
@@ -365,3 +375,4 @@ function Dashboard() {
 }
 
 export default Dashboard;
+
