@@ -489,7 +489,7 @@ function Dashboard() {
 
     const scenarioData = energyData.find(d => d.Scenario === selectedScenario);
     const actualCO2 = 37400000000;
-    const actualWater = 13600000000;
+    const actualWater = 14500000000;
 
     const Pollution2021 = {};
     const Pollution2050 = {};
@@ -550,7 +550,7 @@ function Dashboard() {
           const diffPercentage = ((d.value - actualValue) / actualValue * 100).toFixed(2);
           return `(${Math.round(diffPercentage)}%)`;
         }
-        return d.value.toFixed(2);
+        return;
       })
       .style("font-size", "12px")
       .style("font-weight", "bold")
