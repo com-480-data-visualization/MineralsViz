@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import './styles.css';
 
@@ -224,7 +224,6 @@ function Dashboard() {
       const percentage = +scenarioData[type] || 0;
       const production2021 = (percentage * 27000) / 100; // in TWh
       const production2050 = (percentage * 50000) / 100; // in TWh
-
       mineralsData.forEach(mineral => {
         if (mineral.type === type) {
           mineralNames.forEach(name => {
@@ -284,9 +283,7 @@ function Dashboard() {
       .attr("height", d => height - y(d.value))
       .attr("fill", d => colors[d.key])
       .on("mouseover", function(event, d) {
-        const yearsRemaining = d.key !== 'Reserve' ? reserves[d.mineral] / d.value : null;
-        const displayText = yearsRemaining ? `${Math.round(yearsRemaining)} years` : '';
-        
+        const yearsRemaining = reserves[d.mineral] / d.value;
         g.append("text")
           .attr("class", "hover-text")
           .attr("x", x0(d.mineral) + x1(d.key) + x1.bandwidth() / 2)
@@ -295,7 +292,7 @@ function Dashboard() {
           .style("font-size", "12px")
           .style("font-weight", "bold")
           .style("fill", "black")
-          .text(displayText);
+          .text(`${Math.round(yearsRemaining)} years`);
       })
       .on("mouseout", function() {
         g.selectAll(".hover-text").remove();
@@ -468,8 +465,8 @@ function Dashboard() {
           </button>
         ))}
       </div>
-      <div className="dashboard-container">
-        <div className="dashboard-header">
+      <div className="dashboard-container" style={{ backgroundColor: scenarioColors[selectedScenario] }}>
+        <div className="dashboard-header" style={{ backgroundColor: scenarioColors[selectedScenario], borderBottom: `1px solid ${scenarioColors[selectedScenario]}` }}>
           <h2 className="dashboard-header-title">Energy Mix for {selectedScenario}</h2>
         </div>
         <div className="charts-container">
