@@ -523,7 +523,7 @@ function Dashboard() {
       .range([0, width]);
 
     const y = d3.scaleBand()
-      .domain(barData.map(d => d.name + '-' + d.year))
+      .domain(barData.map(d => d.year))
       .range([0, height])
       .padding(0.1);
 
