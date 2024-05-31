@@ -570,7 +570,7 @@ function Dashboard() {
     const legendData = [
       { year: '2021', color: '#FFD700' },
       { year: '2050', color: '#87CEFA' },
-      { year: 'Actual', color: '#FF4500' }
+      { year: 'Actual', color: '#cc6600' }
     ];
 
     legend.selectAll("rect")
