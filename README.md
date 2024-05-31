@@ -7,7 +7,9 @@
 | Alexandre Maillard     | 296188 |
    
 
-You can acess the website following this [link](https://com-480-data-visualization.github.io/MineralsViz/)
+You can access the website following this [link](https://com-480-data-visualization.github.io/MineralsViz/)
+You can access the process book [here](Process_book.pdf)
+You can access the screencast videos [here](Screencast_Presentation.mp4)
 
 Project architecture :
 ```
